@@ -8,7 +8,8 @@
     "watch:ts": "tsc --watch",
     "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css",
     "watch:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
-    "build": "npm run build:ts && npm run build:css"
+    "build:home": "tailwindcss -i ../home/src/input.css -o ../home/dist/output.css",
+    "build": "npm run build:ts && npm run build:css && npm run build:home"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",

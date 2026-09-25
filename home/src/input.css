@@ -1,0 +1,5 @@
+/* Tailwind CSS v4 — local stylesheet for the RevOnest home page.
+   Compiled to ../dist/output.css so the landing page works offline. */
+@import "../../typescript-tailwind/node_modules/tailwindcss/index.css";
+
+@source "../index.html";
