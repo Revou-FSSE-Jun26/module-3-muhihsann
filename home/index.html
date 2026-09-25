@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RevOnest — Everyday Essentials for Every Corner of Life</title>
+  <meta name="description" content="RevOnest online store — electronics, kitchen, books, and sports gear, thoughtfully curated." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: { DEFAULT: "#d97706", dark: "#b45309" } },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-stone-50 text-stone-900">
+  <!-- Header -->
+  <header class="sticky top-0 z-20 border-b border-stone-200 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+      <a href="index.html" class="text-xl font-extrabold tracking-tight">
+        Rev<span class="text-amber-600">Onest</span>
+      </a>
+      <nav class="hidden gap-6 text-sm font-medium text-stone-600 sm:flex">
+        <a href="index.html" class="text-amber-700">Home</a>
+        <a href="#categories" class="hover:text-amber-700">Categories</a>
+        <a href="#featured" class="hover:text-amber-700">Featured</a>
+        <a href="../html-css/index.html" class="hover:text-amber-700">About</a>
+      </nav>
+      <a href="../typescript-tailwind/index.html"
+         class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-700">
+        Shop Catalog
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden">
+    <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-2 md:py-24">
+      <div>
+        <p class="mb-3 inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-700">
+          Everyday Essentials
+        </p>
+        <h1 class="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+          Everything you need,<br /><span class="text-amber-600">thoughtfully curated.</span>
+        </h1>
+        <p class="mt-4 max-w-md text-lg text-stone-600">
+          From workspace tech to kitchen upgrades, page-turners, and gear that
+          keeps you moving — RevOnest brings four worlds into one simple store.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="../typescript-tailwind/index.html"
+             class="rounded-xl bg-amber-600 px-6 py-3 font-semibold text-white transition hover:bg-amber-700">
+            Browse products
+          </a>
+          <a href="#categories"
+             class="rounded-xl border border-stone-300 bg-white px-6 py-3 font-semibold text-stone-700 transition hover:border-amber-400 hover:text-amber-700">
+            Explore categories
+          </a>
+        </div>
+      </div>
+      <div class="relative">
+        <img
+          src="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=900&q=80"
+          alt="Curated everyday products"
+          class="aspect-[4/3] w-full rounded-3xl object-cover shadow-xl"
+        />
+        <div class="absolute -bottom-5 -left-5 hidden rounded-2xl bg-white p-4 shadow-lg sm:block">
+          <p class="text-2xl font-extrabold text-amber-600">4</p>
+          <p class="text-sm text-stone-500">categories, one cart</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section id="categories" class="mx-auto max-w-6xl px-4 py-12">
+    <div class="mb-8 text-center">
+      <h2 class="text-3xl font-bold tracking-tight">Shop by Category</h2>
+      <p class="mt-2 text-stone-500">Four curated departments to fit every part of your day.</p>
+    </div>
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <a href="../typescript-tailwind/index.html" class="group relative overflow-hidden rounded-2xl">
+        <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=500&q=80" alt="Electronics" class="aspect-square w-full object-cover transition duration-300 group-hover:scale-105" />
+        <div class="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent p-4">
+          <span class="text-lg font-bold text-white">Electronics</span>
+        </div>
+      </a>
+      <a href="../typescript-tailwind/index.html" class="group relative overflow-hidden rounded-2xl">
+        <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=500&q=80" alt="Kitchen" class="aspect-square w-full object-cover transition duration-300 group-hover:scale-105" />
+        <div class="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent p-4">
+          <span class="text-lg font-bold text-white">Kitchen</span>
+        </div>
+      </a>
+      <a href="../typescript-tailwind/index.html" class="group relative overflow-hidden rounded-2xl">
+        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80" alt="Books" class="aspect-square w-full object-cover transition duration-300 group-hover:scale-105" />
+        <div class="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent p-4">
+          <span class="text-lg font-bold text-white">Books</span>
+        </div>
+      </a>
+      <a href="../typescript-tailwind/index.html" class="group relative overflow-hidden rounded-2xl">
+        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=500&q=80" alt="Sports" class="aspect-square w-full object-cover transition duration-300 group-hover:scale-105" />
+        <div class="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent p-4">
+          <span class="text-lg font-bold text-white">Sports</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured products -->
+  <section id="featured" class="bg-white py-14">
+    <div class="mx-auto max-w-6xl px-4">
+      <div class="mb-8 flex items-end justify-between">
+        <div>
+          <h2 class="text-3xl font-bold tracking-tight">Featured Products</h2>
+          <p class="mt-2 text-stone-500">A few favorites from across the store.</p>
+        </div>
+        <a href="../typescript-tailwind/index.html" class="hidden text-sm font-semibold text-amber-700 hover:underline sm:block">View all →</a>
+      </div>
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Espresso Machine -->
+        <article class="group overflow-hidden rounded-2xl border border-stone-200 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="aspect-[4/3] overflow-hidden bg-stone-100">
+            <img src="https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?auto=format&fit=crop&w=500&q=80" alt="Espresso Machine" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+          </div>
+          <div class="p-4">
+            <p class="text-xs font-semibold text-amber-700">Kitchen</p>
+            <h3 class="font-bold">Espresso Machine</h3>
+            <p class="text-sm text-amber-500">★★★★★ <span class="text-stone-500">4.7</span></p>
+            <p class="mt-1 font-extrabold">$199.00</p>
+          </div>
+        </article>
+        <!-- Mechanical Keyboard -->
+        <article class="group overflow-hidden rounded-2xl border border-stone-200 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="aspect-[4/3] overflow-hidden bg-stone-100">
+            <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80" alt="Mechanical Keyboard" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+          </div>
+          <div class="p-4">
+            <p class="text-xs font-semibold text-amber-700">Electronics</p>
+            <h3 class="font-bold">Mechanical Keyboard</h3>
+            <p class="text-sm text-amber-500">★★★★★ <span class="text-stone-500">4.8</span></p>
+            <p class="mt-1 font-extrabold">$90.00</p>
+          </div>
+        </article>
+        <!-- Atomic Habits -->
+        <article class="group overflow-hidden rounded-2xl border border-stone-200 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="aspect-[4/3] overflow-hidden bg-stone-100">
+            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80" alt="Atomic Habits" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+          </div>
+          <div class="p-4">
+            <p class="text-xs font-semibold text-amber-700">Books</p>
+            <h3 class="font-bold">Atomic Habits</h3>
+            <p class="text-sm text-amber-500">★★★★★ <span class="text-stone-500">4.9</span></p>
+            <p class="mt-1 font-extrabold">$17.00</p>
+          </div>
+        </article>
+        <!-- Running Shoes -->
+        <article class="group overflow-hidden rounded-2xl border border-stone-200 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="aspect-[4/3] overflow-hidden bg-stone-100">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="Running Shoes" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+          </div>
+          <div class="p-4">
+            <p class="text-xs font-semibold text-amber-700">Sports</p>
+            <h3 class="font-bold">Running Shoes</h3>
+            <p class="text-sm text-amber-500">★★★★☆ <span class="text-stone-500">4.3</span></p>
+            <p class="mt-1 font-extrabold">$75.00</p>
+          </div>
+        </article>
+      </div>
+      <div class="mt-8 text-center">
+        <a href="../typescript-tailwind/index.html"
+           class="inline-block rounded-xl bg-amber-600 px-8 py-3 font-semibold text-white transition hover:bg-amber-700">
+          Shop the full catalog
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Promise band -->
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <div class="grid gap-6 sm:grid-cols-3">
+      <div class="rounded-2xl border border-stone-200 bg-white p-6 text-center">
+        <p class="text-2xl">🚚</p>
+        <h3 class="mt-2 font-bold">Fast Delivery</h3>
+        <p class="mt-1 text-sm text-stone-500">Free shipping on orders over $50.</p>
+      </div>
+      <div class="rounded-2xl border border-stone-200 bg-white p-6 text-center">
+        <p class="text-2xl">↩️</p>
+        <h3 class="mt-2 font-bold">Easy Returns</h3>
+        <p class="mt-1 text-sm text-stone-500">30-day no-questions-asked returns.</p>
+      </div>
+      <div class="rounded-2xl border border-stone-200 bg-white p-6 text-center">
+        <p class="text-2xl">🔒</p>
+        <h3 class="mt-2 font-bold">Secure Checkout</h3>
+        <p class="mt-1 text-sm text-stone-500">Your payment details stay protected.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-stone-200 bg-white">
+    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row">
+      <p class="text-sm text-stone-500">&copy; 2026 RevOnest — Checkpoint 1 demo store.</p>
+      <nav class="flex gap-5 text-sm text-stone-500">
+        <a href="index.html" class="hover:text-amber-700">Home</a>
+        <a href="../typescript-tailwind/index.html" class="hover:text-amber-700">Catalog</a>
+        <a href="../html-css/index.html" class="hover:text-amber-700">About</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
