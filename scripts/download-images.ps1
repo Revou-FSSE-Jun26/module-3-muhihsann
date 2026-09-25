@@ -29,6 +29,11 @@ $catalog = [ordered]@{
   "yoga-mat"              = "photo-1601925260368-ae2f83cf8b7f"
   "adjustable-dumbbell"   = "photo-1638536532686-d610adfc8e5c"
   "water-bottle"          = "photo-1602143407151-7111542de6e8"
+  "foldable-phone"        = "photo-1657731739861-b21d95062cbf"
+  "compact-laptop"        = "photo-1517336714731-489689fd1ca8"
+  "retro-handheld"        = "photo-1531525645387-7f14be1bdbbd"
+  "smart-glasses"         = "photo-1591076482161-42ce6da69f67"
+  "air-fryer"             = "photo-1695089028114-ce28248f0ab9"
 }
 
 # Home-only images (hero at 900, category tiles at 500)
