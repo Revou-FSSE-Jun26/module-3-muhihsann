@@ -1,0 +1,317 @@
+/* ---------------------------------------------------------------
+   Profile page styles
+   Demonstrates: box model (margin/border/padding/content),
+   Flexbox, CSS Grid (two-dimensional layout), and a responsive
+   breakpoint via media query.
+----------------------------------------------------------------- */
+
+:root {
+  /* RevOnest theme — warm amber + stone */
+  --blue: #d97706;        /* primary (amber-600) */
+  --blue-dark: #b45309;   /* primary hover (amber-700) */
+  --ink: #1c1917;         /* stone-900 */
+  --muted: #57534e;       /* stone-600 */
+  --bg: #fafaf9;          /* stone-50 */
+  --card: #ffffff;
+  --border: #e7e5e4;      /* stone-200 */
+}
+
+/* Reset + base box model */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* padding/border included in element width */
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+}
+
+/* ---------- Header (Flexbox) ---------- */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+}
+
+.brand-name {
+  font-weight: 600;
+}
+
+.site-nav ul {
+  display: flex;
+  gap: 1.25rem;
+  list-style: none;
+}
+
+.site-nav a {
+  text-decoration: none;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.site-nav a:hover {
+  color: var(--blue);
+}
+
+/* ---------- Hero (Flexbox) ---------- */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 2rem 1.5rem;
+}
+
+.hero-text {
+  flex: 1 1 340px;
+}
+
+.hero-text h1 {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.tagline {
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.cta {
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.cta:hover {
+  background: var(--blue-dark);
+}
+
+.hero-avatar {
+  text-align: center;
+}
+
+.hero-avatar img {
+  border-radius: 16px;
+  border: 4px solid var(--card);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+.hero-avatar figcaption {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ---------- Shared section spacing ---------- */
+section {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border);
+}
+
+/* ---------- Skills (CSS Grid — 2D layout) ---------- */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  list-style: none;
+}
+
+.skill-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.skill-card h3 {
+  color: var(--blue);
+  margin-bottom: 0.4rem;
+}
+
+.skill-card p {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ---------- Projects (Flexbox wrap) ---------- */
+.projects-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.project-card {
+  flex: 1 1 280px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--blue);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.project-card h3 {
+  margin-bottom: 0.4rem;
+}
+
+.project-card p {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ---------- Contact form (CSS Grid) ---------- */
+.contact-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field--full {
+  grid-column: 1 / -1; /* span both columns */
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+input,
+select,
+textarea {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  background: #fff;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.18);
+}
+
+button[type="submit"] {
+  padding: 0.75rem 1.5rem;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  justify-self: start;
+}
+
+button[type="submit"]:hover {
+  background: var(--blue-dark);
+}
+
+/* ---------- Footer (Flexbox) ---------- */
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 3rem auto 2rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.footer-links {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+}
+
+.footer-links a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--blue);
+}
+
+/* ---------------------------------------------------------------
+   Responsive breakpoint — mobile width (<= 768px)
+----------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-nav ul {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .hero {
+    flex-direction: column-reverse;
+    text-align: center;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr; /* single column on mobile */
+  }
+
+  .contact-form {
+    grid-template-columns: 1fr; /* stack fields on mobile */
+  }
+}
