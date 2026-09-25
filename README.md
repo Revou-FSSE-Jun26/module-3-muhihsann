@@ -159,6 +159,48 @@ python -m http.server 8000
 
 Then browse to the printed URL (e.g. `http://localhost:8000/home/index.html`).
 
+## Works offline (local images + local Tailwind)
+
+RevOnest is fully self-contained — every image and stylesheet is committed to
+the repo, so the store renders with **no internet connection**.
+
+- Product images live in `typescript-tailwind/images/` and are referenced by
+  local paths in `src/data.ts` (e.g. `./images/wireless-mouse.jpg`).
+- Home page images (hero + category tiles) live in `home/images/`.
+- The home page loads a **compiled** Tailwind stylesheet (`home/dist/output.css`)
+  instead of the Tailwind CDN, so it stays styled offline too.
+
+### Re-downloading / changing the images
+
+The images were fetched from [Unsplash](https://unsplash.com) (free to use)
+with a helper script. To re-download them (this step needs internet):
+
+```powershell
+# from the Frontend/ root, on Windows PowerShell
+./scripts/download-images.ps1
+```
+
+The script maps a descriptive filename to each Unsplash photo id and saves the
+files into `typescript-tailwind/images/` and `home/images/`. To swap an image,
+edit the id in the script (or just drop your own `.jpg` in the folder using the
+same filename), then re-run it. Content sourced from Unsplash; filenames and
+references were added for this project.
+
+### Rebuilding the stylesheets
+
+If you change any markup or the typed data, rebuild so the compiled output stays
+in sync:
+
+```bash
+cd typescript-tailwind
+npm install          # first time only
+npm run build        # compiles TS + catalog CSS + home CSS
+```
+
+`npm run build` runs three steps: `build:ts` (TypeScript → `dist/`),
+`build:css` (catalog Tailwind → `typescript-tailwind/dist/output.css`), and
+`build:home` (home Tailwind → `home/dist/output.css`).
+
 ## Screenshots
 
 See the `screenshots/` folder for:
