@@ -17,7 +17,7 @@ export const products: ProductList = [
     rating: 4.5,
     availability: { state: "in-stock", quantity: 150 },
     image:
-      "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=600&q=80",
+      "./images/wireless-mouse.jpg",
     meta: { brand: "Logi", reviews: 214 },
     tags: ["ergonomic", "wireless"],
   },
@@ -30,7 +30,7 @@ export const products: ProductList = [
     rating: 4.8,
     availability: { state: "in-stock", quantity: 60 },
     image:
-      "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=600&q=80",
+      "./images/mechanical-keyboard.jpg",
     meta: { brand: "KeyCraft", reviews: 342 },
     tags: ["rgb", "hot-swap"],
   },
@@ -43,7 +43,7 @@ export const products: ProductList = [
     rating: 4.7,
     availability: { state: "in-stock", quantity: 45 },
     image:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
+      "./images/headphones.jpg",
     meta: { brand: "SoundWave", reviews: 501 },
     tags: ["anc", "wireless"],
   },
@@ -56,7 +56,7 @@ export const products: ProductList = [
     rating: 4.4,
     availability: { state: "in-stock", quantity: 70 },
     image:
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
+      "./images/smart-watch.jpg",
     meta: { brand: "PulseTech", reviews: 388 },
     tags: ["fitness", "bluetooth"],
   },
@@ -71,7 +71,7 @@ export const products: ProductList = [
     rating: 4.4,
     availability: { state: "in-stock", quantity: 80 },
     image:
-      "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?auto=format&fit=crop&w=600&q=80",
+      "./images/steel-pan.jpg",
     meta: { brand: "ChefLine", reviews: 98 },
     tags: ["non-stick", "12-inch"],
   },
@@ -84,7 +84,7 @@ export const products: ProductList = [
     rating: 4.7,
     availability: { state: "in-stock", quantity: 25 },
     image:
-      "https://images.unsplash.com/photo-1520970014086-2208d157c9e2?auto=format&fit=crop&w=600&q=80",
+      "./images/espresso-machine.jpg",
     meta: { brand: "BrewPro", reviews: 176 },
     tags: ["espresso", "compact"],
   },
@@ -97,7 +97,7 @@ export const products: ProductList = [
     rating: 4.8,
     availability: { state: "in-stock", quantity: 90 },
     image:
-      "https://images.unsplash.com/photo-1593618998160-e34014e67546?auto=format&fit=crop&w=600&q=80",
+      "./images/chef-knife.jpg",
     meta: { brand: "EdgePro", reviews: 233 },
     tags: ["sharp", "8-inch"],
   },
@@ -110,7 +110,7 @@ export const products: ProductList = [
     rating: 4.5,
     availability: { state: "in-stock", quantity: 65 },
     image:
-      "https://images.unsplash.com/photo-1594213114663-d94db9b17125?auto=format&fit=crop&w=600&q=80",
+      "./images/electric-kettle.jpg",
     meta: { brand: "BoilMate", reviews: 154 },
     tags: ["1.7L", "fast-boil"],
   },
@@ -125,7 +125,7 @@ export const products: ProductList = [
     rating: 4.6,
     availability: { state: "in-stock", quantity: 100 },
     image:
-      "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
+      "./images/the-silent-patient.jpg",
     meta: { brand: "Celadon", reviews: 512 },
     tags: ["thriller", "fiction"],
   },
@@ -138,7 +138,7 @@ export const products: ProductList = [
     rating: 4.9,
     availability: { state: "in-stock", quantity: 200 },
     image:
-      "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80",
+      "./images/atomic-habits.jpg",
     meta: { brand: "Avery", reviews: 1289 },
     tags: ["self-help", "bestseller"],
   },
@@ -151,7 +151,7 @@ export const products: ProductList = [
     rating: 4.7,
     availability: { state: "in-stock", quantity: 140 },
     image:
-      "https://images.unsplash.com/photo-1589998059171-988d887df646?auto=format&fit=crop&w=600&q=80",
+      "./images/deep-work.jpg",
     meta: { brand: "Grand Central", reviews: 640 },
     tags: ["productivity", "focus"],
   },
@@ -164,7 +164,7 @@ export const products: ProductList = [
     rating: 4.5,
     availability: { state: "out-of-stock" },
     image:
-      "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=600&q=80",
+      "./images/midnight-library.jpg",
     meta: { brand: "Viking", reviews: 877 },
     tags: ["fiction", "bestseller"],
   },
@@ -179,7 +179,7 @@ export const products: ProductList = [
     rating: 4.3,
     availability: { state: "in-stock", quantity: 120 },
     image:
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
+      "./images/running-shoes.jpg",
     meta: { brand: "StridePro", reviews: 267 },
     tags: ["lightweight", "breathable"],
   },
@@ -192,7 +192,7 @@ export const products: ProductList = [
     rating: 4.2,
     availability: { state: "out-of-stock" },
     image:
-      "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=600&q=80",
+      "./images/yoga-mat.jpg",
     meta: { brand: "ZenFlow", reviews: 143 },
     tags: ["non-slip", "6mm"],
   },
@@ -205,7 +205,7 @@ export const products: ProductList = [
     rating: 4.6,
     availability: { state: "in-stock", quantity: 38 },
     image:
-      "https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?auto=format&fit=crop&w=600&q=80",
+      "./images/adjustable-dumbbell.jpg",
     meta: { brand: "IronCore", reviews: 189 },
     tags: ["adjustable", "home-gym"],
   },
@@ -218,7 +218,7 @@ export const products: ProductList = [
     rating: 4.5,
     availability: { state: "in-stock", quantity: 160 },
     image:
-      "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=600&q=80",
+      "./images/water-bottle.jpg",
     meta: { brand: "HydroKeep", reviews: 305 },
     tags: ["insulated", "1L"],
   },
