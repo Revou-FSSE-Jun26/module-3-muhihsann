@@ -1,0 +1,7 @@
+/* Tailwind CSS v4 — CSS-first configuration.
+   Everything the build scans comes from this single import. */
+@import "tailwindcss";
+
+/* Tell Tailwind v4 which files to scan for utility classes. */
+@source "../index.html";
+@source "./**/*.ts";
