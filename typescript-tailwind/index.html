@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RevOnest — Product Catalog</title>
+  <link rel="stylesheet" href="./dist/output.css" />
+</head>
+<body class="min-h-screen bg-stone-50 text-stone-900">
+  <!-- Header with cart summary -->
+  <header class="sticky top-0 z-10 border-b border-stone-200 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+      <a href="../home/index.html" class="text-xl font-extrabold tracking-tight">
+        Rev<span class="text-amber-600">Onest</span>
+      </a>
+      <nav class="hidden gap-6 text-sm font-medium text-stone-600 sm:flex">
+        <a href="../home/index.html" class="hover:text-amber-700">Home</a>
+        <a href="index.html" class="text-amber-700">Catalog</a>
+        <a href="../html-css/index.html" class="hover:text-amber-700">About</a>
+      </nav>
+      <div class="flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800">
+        <span aria-hidden="true">🛒</span>
+        <span id="cart-count">0</span>
+        <span class="text-amber-400">·</span>
+        <span id="cart-total">$0.00</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 py-8">
+    <div class="mb-6">
+      <h1 class="text-2xl font-extrabold tracking-tight sm:text-3xl">Shop the RevOnest Catalog</h1>
+      <p class="mt-1 text-stone-500">Electronics, kitchen, books, and sports gear — all in one place.</p>
+    </div>
+
+    <!-- Live search -->
+    <div class="mb-4">
+      <label for="search" class="sr-only">Search products</label>
+      <input
+        id="search"
+        type="search"
+        placeholder="Search 'espresso', 'shoes', 'book'..."
+        class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-base shadow-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
+      />
+    </div>
+
+    <!-- Category filter chips (populated by JS) -->
+    <div id="filters" class="mb-8 flex flex-wrap gap-2"></div>
+
+    <!-- Responsive, mobile-first grid: 1 col -> 2 (sm) -> 3 (lg) -->
+    <div id="catalog" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+
+    <!-- Empty state, toggled by JS -->
+    <p id="empty" class="hidden py-16 text-center text-stone-500">
+      No products match your search.
+    </p>
+  </main>
+
+  <footer class="mx-auto max-w-6xl px-4 py-8 text-center text-sm text-stone-500">
+    RevOnest Checkpoint 1 — Typed product catalog (TypeScript + Tailwind CSS).
+  </footer>
+
+  <!-- Compiled TypeScript output -->
+  <script type="module" src="./dist/main.js"></script>
+</body>
+</html>
