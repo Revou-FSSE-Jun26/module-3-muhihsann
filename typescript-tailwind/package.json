@@ -1,7 +1,7 @@
 {
-  "name": "typed-product-catalog",
+  "name": "revonest-frontend",
   "version": "1.0.0",
-  "description": "Typed, interactive product catalog with TypeScript + Tailwind CSS (RevOnest Checkpoint 1).",
+  "description": "RevOnest frontend — typed, interactive product catalog with TypeScript + Tailwind CSS (Checkpoint 1).",
   "private": true,
   "scripts": {
     "build:ts": "tsc",
