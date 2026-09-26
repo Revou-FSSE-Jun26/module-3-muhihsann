@@ -3,103 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Muhammad Ihsan — Profile</title>
-  <meta name="description" content="Semantic HTML/CSS profile page with a contact form, built for the RevOnest Checkpoint 1 store." />
+  <title>About RevOnest — Everyday Essentials Store</title>
+  <meta name="description" content="About RevOnest — a curated everyday-essentials store for electronics, kitchen, books, and sports. Semantic HTML/CSS page with a contact form." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <!-- Semantic header with primary navigation -->
   <header class="site-header">
     <div class="brand">
-      <span class="brand-logo" aria-hidden="true">MI</span>
-      <p class="brand-name">Muhammad Ihsan</p>
+      <span class="brand-logo" aria-hidden="true">R</span>
+      <p class="brand-name">Rev<span class="brand-accent">Onest</span></p>
     </div>
     <nav class="site-nav" aria-label="Primary">
       <ul>
         <li><a href="../home/index.html">Home</a></li>
         <li><a href="../typescript-tailwind/index.html">Catalog</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
+        <li><a href="#why">Why us</a></li>
+        <li><a href="#categories">Categories</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
   </header>
 
   <main>
-    <!-- Hero / intro -->
+    <!-- Hero / about the store -->
     <section class="hero" id="about" aria-labelledby="about-heading">
       <div class="hero-text">
-        <h1 id="about-heading">Front-End Developer in Training</h1>
+        <p class="eyebrow">Our Store</p>
+        <h1 id="about-heading">Everyday essentials, thoughtfully curated.</h1>
         <p class="tagline">
-          Learning the raw building blocks — semantic HTML, CSS layout, vanilla
-          JavaScript, TypeScript, and Tailwind — before moving on to React and Next.js.
+          RevOnest brings four departments — electronics, kitchen, books, and
+          sports — into one simple store. We pick durable, well-reviewed products
+          so you spend less time comparing and more time enjoying.
         </p>
-        <a class="cta" href="#contact">Get in touch</a>
+        <a class="cta" href="../typescript-tailwind/index.html">Browse the catalog</a>
       </div>
       <figure class="hero-avatar">
         <img
-          src="https://placehold.co/240x240/2563eb/ffffff?text=MI"
-          alt="Portrait placeholder of Muhammad Ihsan"
-          width="240"
-          height="240"
+          src="https://placehold.co/280x280/d97706/ffffff?text=RevOnest"
+          alt="RevOnest store logo"
+          width="280"
+          height="280"
         />
-        <figcaption>RevoU FSSE — Cohort Jun26</figcaption>
+        <figcaption>Serving shoppers since 2026</figcaption>
       </figure>
     </section>
 
-    <!-- Skills laid out with CSS Grid (two-dimensional layout) -->
-    <section class="skills" id="skills" aria-labelledby="skills-heading">
-      <h2 id="skills-heading">Skills</h2>
-      <ul class="skills-grid">
-        <li class="skill-card">
-          <h3>HTML5</h3>
-          <p>Semantic markup, accessible forms, and document structure.</p>
+    <!-- Why shop with us — CSS Grid (two-dimensional layout) -->
+    <section class="why" id="why" aria-labelledby="why-heading">
+      <h2 id="why-heading">Why shop with us</h2>
+      <ul class="why-grid">
+        <li class="why-card">
+          <span class="why-icon" aria-hidden="true">🚚</span>
+          <h3>Fast delivery</h3>
+          <p>Free shipping on orders over $50, delivered within a few days.</p>
         </li>
-        <li class="skill-card">
-          <h3>CSS</h3>
-          <p>Box model, Flexbox, Grid, and responsive breakpoints.</p>
+        <li class="why-card">
+          <span class="why-icon" aria-hidden="true">↩️</span>
+          <h3>Easy returns</h3>
+          <p>Changed your mind? Send it back within 30 days, no questions asked.</p>
         </li>
-        <li class="skill-card">
-          <h3>JavaScript</h3>
-          <p>DOM manipulation, events, and array methods.</p>
+        <li class="why-card">
+          <span class="why-icon" aria-hidden="true">🔒</span>
+          <h3>Secure checkout</h3>
+          <p>Your payment details are encrypted and never stored on our servers.</p>
         </li>
-        <li class="skill-card">
-          <h3>TypeScript</h3>
-          <p>Interfaces, type aliases, and union types.</p>
+        <li class="why-card">
+          <span class="why-icon" aria-hidden="true">⭐</span>
+          <h3>Curated quality</h3>
+          <p>Every item is chosen for durability and strong customer reviews.</p>
         </li>
-        <li class="skill-card">
-          <h3>Tailwind CSS</h3>
-          <p>Utility-first styling and mobile-first layouts.</p>
+        <li class="why-card">
+          <span class="why-icon" aria-hidden="true">💬</span>
+          <h3>Real support</h3>
+          <p>A friendly team ready to help before and after your purchase.</p>
         </li>
-        <li class="skill-card">
-          <h3>Git</h3>
-          <p>Incremental commits and version control workflow.</p>
+        <li class="why-card">
+          <span class="why-icon" aria-hidden="true">🏷️</span>
+          <h3>Fair prices</h3>
+          <p>Honest, transparent pricing across all four departments.</p>
         </li>
       </ul>
     </section>
 
-    <!-- Projects -->
-    <section class="projects" id="projects" aria-labelledby="projects-heading">
-      <h2 id="projects-heading">Projects</h2>
-      <div class="projects-list">
-        <article class="project-card">
-          <h3>Profile Page</h3>
-          <p>Semantic HTML/CSS page with Grid, Flexbox, and a responsive breakpoint.</p>
+    <!-- Category highlights -->
+    <section class="categories" id="categories" aria-labelledby="categories-heading">
+      <h2 id="categories-heading">What we stock</h2>
+      <div class="category-list">
+        <article class="category-card">
+          <h3>Electronics</h3>
+          <p>Mice, keyboards, headphones, foldables, laptops, and more.</p>
         </article>
-        <article class="project-card">
-          <h3>Vanilla JS Exercises</h3>
-          <p>DOM manipulation, event handling, and array processing.</p>
+        <article class="category-card">
+          <h3>Kitchen</h3>
+          <p>Pans, espresso machines, kettles, knives, and air fryers.</p>
         </article>
-        <article class="project-card">
-          <h3>Typed Product Catalog</h3>
-          <p>TypeScript + Tailwind catalog with live search and an add-to-cart counter.</p>
+        <article class="category-card">
+          <h3>Books</h3>
+          <p>Thrillers, self-help, and page-turning bestsellers.</p>
+        </article>
+        <article class="category-card">
+          <h3>Sports</h3>
+          <p>Running shoes, yoga mats, dumbbells, and water bottles.</p>
         </article>
       </div>
     </section>
 
     <!-- Contact form with associated labels and input types -->
     <section class="contact" id="contact" aria-labelledby="contact-heading">
-      <h2 id="contact-heading">Contact Me</h2>
+      <h2 id="contact-heading">Get in touch</h2>
+      <p class="contact-lead">
+        Questions about an order or a product? Send us a message and we'll get
+        back to you.
+      </p>
       <form class="contact-form" action="#" method="post" novalidate>
         <div class="field">
           <label for="name">Full name</label>
@@ -116,9 +132,10 @@
         <div class="field">
           <label for="topic">Topic</label>
           <select id="topic" name="topic">
-            <option value="general">General</option>
-            <option value="collab">Collaboration</option>
-            <option value="hiring">Hiring</option>
+            <option value="order">Order help</option>
+            <option value="product">Product question</option>
+            <option value="returns">Returns</option>
+            <option value="other">Something else</option>
           </select>
         </div>
         <div class="field field--full">
@@ -133,11 +150,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>&copy; 2026 Muhammad Ihsan — RevOnest Checkpoint 1.</p>
-    <ul class="footer-links">
-      <li><a href="https://github.com/Revou-FSSE-Jun26/module-2-muhihsann">GitHub</a></li>
-      <li><a href="#about">Back to top</a></li>
-    </ul>
+    <p>&copy; 2026 RevOnest. Built with semantic HTML, CSS &amp; Tailwind CSS.</p>
   </footer>
 </body>
 </html>

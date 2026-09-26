@@ -61,7 +61,11 @@ body {
 }
 
 .brand-name {
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.brand-accent {
+  color: var(--blue);
 }
 
 .site-nav ul {
@@ -96,8 +100,22 @@ body {
   flex: 1 1 340px;
 }
 
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: #fef3c7; /* amber-100 */
+  color: var(--blue-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .hero-text h1 {
-  font-size: 2rem;
+  font-size: 2.25rem;
+  line-height: 1.2;
   margin-bottom: 0.75rem;
 }
 
@@ -150,40 +168,44 @@ section h2 {
   border-bottom: 2px solid var(--border);
 }
 
-/* ---------- Skills (CSS Grid — 2D layout) ---------- */
-.skills-grid {
+/* ---------- Why shop with us (CSS Grid — 2D layout) ---------- */
+.why-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   list-style: none;
 }
 
-.skill-card {
+.why-card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.25rem;
 }
 
-.skill-card h3 {
-  color: var(--blue);
-  margin-bottom: 0.4rem;
+.why-icon {
+  font-size: 1.5rem;
 }
 
-.skill-card p {
+.why-card h3 {
+  color: var(--blue);
+  margin: 0.5rem 0 0.4rem;
+}
+
+.why-card p {
   color: var(--muted);
   font-size: 0.95rem;
 }
 
-/* ---------- Projects (Flexbox wrap) ---------- */
-.projects-list {
+/* ---------- Category highlights (Flexbox wrap) ---------- */
+.category-list {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
 }
 
-.project-card {
-  flex: 1 1 280px;
+.category-card {
+  flex: 1 1 220px;
   background: var(--card);
   border: 1px solid var(--border);
   border-left: 4px solid var(--blue);
@@ -191,13 +213,20 @@ section h2 {
   padding: 1.25rem;
 }
 
-.project-card h3 {
+.category-card h3 {
   margin-bottom: 0.4rem;
 }
 
-.project-card p {
+.category-card p {
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+/* ---------- Contact intro ---------- */
+.contact-lead {
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+  max-width: 60ch;
 }
 
 /* ---------- Contact form (CSS Grid) ---------- */
@@ -259,33 +288,14 @@ button[type="submit"]:hover {
   background: var(--blue-dark);
 }
 
-/* ---------- Footer (Flexbox) ---------- */
+/* ---------- Footer (centered, minimalist) ---------- */
 .site-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-  max-width: 1100px;
-  margin: 3rem auto 2rem;
-  padding: 1.5rem;
+  margin-top: 3rem;
+  padding: 2rem 1.5rem;
   border-top: 1px solid var(--border);
+  text-align: center;
   color: var(--muted);
-}
-
-.footer-links {
-  display: flex;
-  gap: 1rem;
-  list-style: none;
-}
-
-.footer-links a {
-  color: var(--muted);
-  text-decoration: none;
-}
-
-.footer-links a:hover {
-  color: var(--blue);
+  font-size: 0.95rem;
 }
 
 /* ---------------------------------------------------------------
@@ -307,7 +317,7 @@ button[type="submit"]:hover {
     text-align: center;
   }
 
-  .skills-grid {
+  .why-grid {
     grid-template-columns: 1fr; /* single column on mobile */
   }
 
