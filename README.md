@@ -1,16 +1,20 @@
 # 🛍️ RevOnest — Frontend Fundamentals (Checkpoint 1)
 
-**RevOnest** is a small demo online store built to practice the raw building
-blocks that React, Next.js, and Tailwind sit on top of — **semantic HTML, CSS
-layout, vanilla JavaScript, TypeScript, and Tailwind CSS**. It's themed in warm
-amber + stone and stocks four departments: **Electronics, Kitchen, Books, and
-Sports**.
+**RevOnest** is a demo online store that grows across two stages. It began as a
+set of front-end **fundamentals** — semantic HTML, CSS layout, vanilla
+JavaScript, TypeScript, and Tailwind — and then became a real **Next.js
+application** that renders the same store from live data served by a Flask API.
+It's themed in warm amber + stone and stocks four departments: **Electronics,
+Kitchen, Books, and Sports**.
 
-> This checkpoint is fundamentals-only — it does **not** touch Next.js or the
-> Flask API (those come in Checkpoint 2). The typed, interactive catalog here is
-> the direct predecessor of the React `ProductCard` built next.
+- **Part 1 — Fundamentals** (`html-css/`, `javascript/`, `typescript-tailwind/`,
+  `home/`): static pages and a typed, interactive catalog built from scratch.
+- **Part 2 — Next.js app** (`nextjs-revonest/`): the storefront rebuilt with the
+  App Router, reusable typed components, and live data from the RevOnest Flask
+  API. The typed catalog from Part 1 is the direct predecessor of the React
+  `ProductCard` here.
 
-**Built with:** HTML5 · CSS3 (Grid/Flexbox) · Vanilla JavaScript · TypeScript 5 · Tailwind CSS 4
+**Built with:** HTML5 · CSS3 (Grid/Flexbox) · Vanilla JavaScript · TypeScript 5 · Tailwind CSS 4 · Next.js 16 (App Router) · React 19
 
 ---
 
@@ -19,8 +23,8 @@ Sports**.
 1. [What's inside](#-whats-inside)
 2. [Quick start](#-quick-start)
 3. [Getting started (step by step)](#-getting-started-step-by-step)
-4. [Project structure](#-project-structure)
-5. [The pages in detail](#-the-pages-in-detail)
+4. [The pages in detail](#-the-pages-in-detail)
+5. [Part 2 — the Next.js app](#-part-2--the-nextjs-app)
 6. [Works offline](#-works-offline)
 7. [Rebuilding after changes](#-rebuilding-after-changes)
 8. [Screenshots](#-screenshots)
@@ -36,10 +40,11 @@ Sports**.
 | ℹ️ **About** | `html-css/index.html` | Semantic "About the store" page with a contact form. |
 | ⚙️ **JS: DOM & events** | `javascript/dom-events.html` | DOM manipulation + event-handling exercise. |
 | 🔢 **JS: array methods** | `javascript/array-methods.html` | `forEach` / `map` / `filter` / `reduce` over the catalog products. |
+| ▲ **Next.js app** | `nextjs-revonest/` | The full storefront rebuilt with Next.js (App Router) + live Flask API data. See [Part 2](#-part-2--the-nextjs-app). |
 
-The pages link to each other, so you can browse the "store" like a real site
-(**Home → Catalog → About**). The design is inspired by modern e-commerce
-storefronts.
+The static pages link to each other, so you can browse the "store" like a real
+site (**Home → Catalog → About**), and the Next.js app is a complete storefront
+of its own. The design is inspired by modern e-commerce storefronts.
 
 ---
 
@@ -211,6 +216,44 @@ the typed `availability` field).
 
 ---
 
+## ▲ Part 2 — the Next.js app
+
+Everything above is the fundamentals stage. The `nextjs-revonest/` folder takes
+the same store and rebuilds it as a real **Next.js 16 (App Router)**
+application, with reusable typed components and **live data** fetched from the
+RevOnest Flask API.
+
+> Full details, setup, and route-by-route docs live in
+> [`nextjs-revonest/README.md`](./nextjs-revonest/README.md). Short version below.
+
+**Run it:**
+```bash
+cd nextjs-revonest
+npm install
+cp .env.example .env.local   # already points at the live API
+npm run dev                  # http://localhost:3000
+```
+
+**What it includes:**
+- **Routes** (App Router): `/` (home), `/products`, `/products/[id]`,
+  `/categories`, `/orders`, and `/login`.
+- **Reusable typed components:** `Header` (active-route nav via `usePathname()`),
+  `Footer`, `Card`, `ProductCard` (quantity counter + conditional stock),
+  `ProductGrid`, `SearchBar`, `CategoryFilter`, `AddProductForm`, `ProductList`.
+- **Server Components** fetch products, categories, and orders with the native
+  `fetch` API; a shared `res.ok` check throws a typed error.
+- **Search by URL** (`router.push('/products?search=…')` + `useSearchParams()`),
+  a category filter, an immutable cart, and a validated add-product form.
+- **`generateMetadata`** gives each product detail page a dynamic title.
+- **`loading.tsx` + `error.tsx`** on every data-fetching route.
+- A **nested layout** (`app/products/layout.tsx`) that stays mounted while
+  navigating between the list and a product detail.
+
+> Data comes from the Flask API at `https://revoshop-sgjp.onrender.com`
+> (free tier — the first request after idle may take a few seconds to wake).
+
+---
+
 ## 🔌 Works offline
 
 RevOnest is fully self-contained — every image and stylesheet is committed, so
@@ -271,6 +314,25 @@ During development you can watch instead: `npm run watch:ts` and
 ### ℹ️ About page
 ![RevOnest About the store page](./screenshots/RevOnestProfile.png)
 
+### ▲ Next.js app
+
+**Home** — Server Component rendering live products
+![RevOnest Next.js home](./screenshots/RevOnestHome_Nextjs.png)
+
+**Products** — live search, category filter, cart, add-product form
+![RevOnest Next.js products](./screenshots/RevOnestProducts_Nextjs.png)
+
+**Categories**
+![RevOnest Next.js categories](./screenshots/RevOnestCategories_Nextjs.png)
+
+**Orders**
+![RevOnest Next.js orders](./screenshots/RevOnestOrders_Nextjs.png)
+
+**Login** — controlled form with validation
+![RevOnest Next.js login](./screenshots/RevOnestLoginPage_Nextjs.png)
+
+![RevOnest Next.js logged in](./screenshots/RevOnestLoggedIn_Nextjs.png)
+
 ---
 
-<p align="center">© 2026 RevOnest — Checkpoint 1. Built with semantic HTML, CSS, vanilla JS, TypeScript &amp; Tailwind CSS.</p>
+<p align="center">© 2026 RevOnest — a demo store from fundamentals to a Next.js app. Built with semantic HTML, CSS, vanilla JS, TypeScript, Tailwind CSS &amp; Next.js.</p>
