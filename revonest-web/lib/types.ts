@@ -57,3 +57,17 @@ export interface LoginFormErrors {
   email?: string;
   password?: string;
 }
+
+// Add-product form (values are strings because they come from inputs).
+export interface ProductFormState {
+  name: string;
+  price: string;
+  stock_quantity: string;
+  description: string;
+}
+
+export interface ProductFormErrors {
+  name?: string;
+  price?: string;
+  stock_quantity?: string;
+}
