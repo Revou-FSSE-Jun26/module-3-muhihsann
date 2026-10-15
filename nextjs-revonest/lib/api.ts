@@ -106,6 +106,30 @@ export function getCategories(): Promise<Category[]> {
   return apiFetch<Category[]>("/categories");
 }
 
+// Fields accepted by create/update. `id`/`created_at` are server-managed.
+export interface CategoryInput {
+  name: string;
+  description?: string;
+}
+
+// POST /categories — returns the created category. 409 if the name exists.
+export function createCategory(input: CategoryInput): Promise<Category> {
+  return apiFetch<Category>("/categories", jsonBody("POST", input));
+}
+
+// PUT /categories/:id — returns the updated category.
+export function updateCategory(
+  id: number,
+  input: CategoryInput
+): Promise<Category> {
+  return apiFetch<Category>(`/categories/${id}`, jsonBody("PUT", input));
+}
+
+// DELETE /categories/:id — returns { message }.
+export function deleteCategory(id: number): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/categories/${id}`, { method: "DELETE" });
+}
+
 /* ---------- Orders ---------- */
 
 // The API requires a user_id query param, so default to user 1 for the demo.
