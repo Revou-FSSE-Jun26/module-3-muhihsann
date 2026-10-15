@@ -78,12 +78,16 @@ export default function Header() {
                 Hi,{" "}
                 <span className="font-semibold text-stone-900">
                   {user.username}
+                </span>{" "}
+                <span
+                  className={`ml-0.5 rounded px-1.5 py-0.5 text-xs font-semibold ${
+                    isAdmin
+                      ? "bg-amber-100 text-amber-700"
+                      : "bg-stone-100 text-stone-600"
+                  }`}
+                >
+                  ({user.role})
                 </span>
-                {isAdmin && (
-                  <span className="ml-1 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-semibold text-amber-700">
-                    admin
-                  </span>
-                )}
               </span>
               <button
                 onClick={handleLogout}
