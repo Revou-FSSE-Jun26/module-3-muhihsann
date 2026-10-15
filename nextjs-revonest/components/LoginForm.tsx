@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import PasswordInput from "@/components/PasswordInput";
+import { ApiError } from "@/lib/api";
 import type { LoginFormState, LoginFormErrors } from "@/lib/types";
 
 /**
@@ -27,13 +30,16 @@ export function validate(data: LoginFormState): LoginFormErrors {
 }
 
 export default function LoginForm() {
+  const router = useRouter();
+  const { login } = useAuth();
   const [form, setForm] = useState<LoginFormState>({
     email: "",
     password: "",
     remember: false,
   });
   const [errors, setErrors] = useState<LoginFormErrors>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   // One controlled-input handler for every field (text, password, checkbox).
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -52,29 +58,46 @@ export default function LoginForm() {
     }
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setFormError(null);
     const nextErrors = validate(form);
     setErrors(nextErrors);
-    if (Object.keys(nextErrors).length === 0) {
-      // No real authentication yet — just show a success state locally.
-      setSubmitted(true);
-    }
-  }
+    if (Object.keys(nextErrors).length > 0) return;
 
-  if (submitted) {
-    return (
-      <div
-        role="status"
-        className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"
-      >
-        ✅ Form is valid — you&apos;re signed in (demo only).
-      </div>
-    );
+    setSubmitting(true);
+    try {
+      const user = await login(form.email, form.password);
+      // Role-based redirect: admins to the dashboard, customers to home.
+      router.push(user.role === "admin" ? "/dashboard" : "/");
+    } catch (err) {
+      // Distinguish genuine bad credentials (API 401) from a failure to reach
+      // the API at all (network error / CORS / server asleep).
+      if (err instanceof ApiError && err.status === 401) {
+        setFormError("Invalid email or password. Please try again.");
+      } else if (err instanceof ApiError) {
+        setFormError(err.message);
+      } else {
+        setFormError(
+          "Couldn't reach the server. It may be waking up — please try again in a moment."
+        );
+      }
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <form className="mt-6 space-y-5" onSubmit={handleSubmit} noValidate>
+      {formError && (
+        <div
+          role="alert"
+          className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700"
+        >
+          {formError}
+        </div>
+      )}
+
       {/* Email */}
       <div>
         <label
@@ -118,20 +141,13 @@ export default function LoginForm() {
             Forgot password?
           </a>
         </div>
-        <input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           autoComplete="current-password"
           value={form.password}
           onChange={handleChange}
-          aria-invalid={!!errors.password}
-          className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 ${
-            errors.password
-              ? "border-rose-400 focus:ring-rose-200"
-              : "border-stone-300 focus:border-amber-500 focus:ring-amber-200"
-          }`}
-          placeholder="••••••••"
+          hasError={!!errors.password}
         />
         {errors.password && (
           <p className="mt-1 text-xs font-medium text-rose-600">
@@ -154,9 +170,10 @@ export default function LoginForm() {
 
       <button
         type="submit"
-        className="w-full rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-700 active:scale-[0.99]"
+        disabled={submitting}
+        className="w-full rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Log in
+        {submitting ? "Logging in…" : "Log in"}
       </button>
     </form>
   );
