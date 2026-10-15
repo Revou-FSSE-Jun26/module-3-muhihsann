@@ -4,7 +4,15 @@
    a res.ok check that throws a typed error on failure.
    ===================================================================== */
 
-import type { Product, Category, Order } from "@/lib/types";
+import type {
+  Product,
+  Category,
+  Order,
+  User,
+  LoginResponse,
+  LoginPayload,
+  RegisterPayload,
+} from "@/lib/types";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000";
@@ -31,13 +39,48 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
-    throw new ApiError(
-      `Request to ${path} failed with status ${res.status}`,
-      res.status
-    );
+    // Try to surface the API's own error message (e.g. "Invalid credentials").
+    let message = `Request to ${path} failed with status ${res.status}`;
+    try {
+      const data = await res.json();
+      if (data?.error) message = data.error;
+      else if (data?.message) message = data.message;
+    } catch {
+      // response had no JSON body; keep the default message
+    }
+    throw new ApiError(message, res.status);
   }
 
-  return (await res.json()) as T;
+  // Some endpoints (e.g. DELETE) may return an empty body.
+  const text = await res.text();
+  return (text ? JSON.parse(text) : undefined) as T;
+}
+
+/** Helper for JSON POST/PUT requests. */
+function jsonBody(method: string, body: unknown): RequestInit {
+  return {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+}
+
+/* ---------- Auth ---------- */
+
+// POST /auth/login — the API expects { email, password_hash }.
+export function login(email: string, password: string): Promise<LoginResponse> {
+  const payload: LoginPayload = { email, password_hash: password };
+  return apiFetch<LoginResponse>("/auth/login", jsonBody("POST", payload));
+}
+
+// POST /users — register. The API always assigns role "customer".
+export function register(
+  username: string,
+  email: string,
+  password: string
+): Promise<User> {
+  const payload: RegisterPayload = { username, email, password_hash: password };
+  return apiFetch<User>("/users", jsonBody("POST", payload));
 }
 
 /* ---------- Products ---------- */

@@ -3,6 +3,36 @@
    Product mirrors the Module 2 Flask API / RevoShop DB schema.
    ===================================================================== */
 
+// ---- Auth / users ----
+
+export type Role = "customer" | "admin";
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  role: Role;
+  created_at?: string;
+}
+
+// POST /auth/login returns { message, user }
+export interface LoginResponse {
+  message: string;
+  user: User;
+}
+
+// Credentials the API expects (note: the password field is `password_hash`).
+export interface LoginPayload {
+  email: string;
+  password_hash: string;
+}
+
+export interface RegisterPayload {
+  username: string;
+  email: string;
+  password_hash: string;
+}
+
 // ---- Domain models (shape returned by the Flask API) ----
 
 export interface Product {
