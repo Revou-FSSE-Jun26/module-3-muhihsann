@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 /** Internal navigation links shown in the header. */
 const navLinks = [
@@ -13,11 +14,18 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, isAdmin, logout, loading } = useAuth();
 
   // A link is "active" when the current path matches it (or is nested under it,
   // for everything except the home route).
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  function handleLogout() {
+    logout();
+    router.push("/");
+  }
 
   return (
     <header className="sticky top-0 z-20 border-b border-stone-200 bg-white/90 backdrop-blur">
@@ -43,19 +51,64 @@ export default function Header() {
                 </Link>
               </li>
             ))}
+            {/* Admins get a Dashboard link. */}
+            {isAdmin && (
+              <li>
+                <Link
+                  href="/dashboard"
+                  aria-current={isActive("/dashboard") ? "page" : undefined}
+                  className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+                    isActive("/dashboard")
+                      ? "bg-amber-100 text-amber-800"
+                      : "text-stone-600 hover:bg-stone-100 hover:text-amber-700"
+                  }`}
+                >
+                  Dashboard
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
 
-        <Link
-          href="/login"
-          className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
-            isActive("/login")
-              ? "bg-amber-700 text-white"
-              : "bg-amber-600 text-white hover:bg-amber-700"
-          }`}
-        >
-          Log in
-        </Link>
+        {/* Right side: auth state. `loading` avoids a flash before hydration. */}
+        <div className="flex items-center gap-3">
+          {loading ? null : user ? (
+            <>
+              <span className="hidden text-sm text-stone-600 sm:inline">
+                Hi,{" "}
+                <span className="font-semibold text-stone-900">
+                  {user.username}
+                </span>
+                {isAdmin && (
+                  <span className="ml-1 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-semibold text-amber-700">
+                    admin
+                  </span>
+                )}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="rounded-lg border border-stone-300 px-3 py-2 text-sm font-semibold text-stone-700 transition hover:border-amber-400 hover:text-amber-700"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/register"
+                className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-stone-600 transition hover:text-amber-700 sm:inline"
+              >
+                Sign up
+              </Link>
+              <Link
+                href="/login"
+                className="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-700"
+              >
+                Log in
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );
