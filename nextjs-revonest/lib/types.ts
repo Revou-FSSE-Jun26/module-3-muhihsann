@@ -5,7 +5,7 @@
 
 // ---- Auth / users ----
 
-export type Role = "customer" | "admin";
+export type Role = "customer" | "seller" | "admin";
 
 export interface User {
   id: number;

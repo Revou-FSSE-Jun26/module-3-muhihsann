@@ -10,6 +10,7 @@ import Card from "@/components/Card";
 import { getProducts } from "@/lib/api";
 import { formatPrice } from "@/lib/ui";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import type { Product } from "@/lib/types";
 
 interface ProductListProps {
@@ -32,6 +33,7 @@ export default function ProductList({ initialProducts }: ProductListProps) {
   const searchQuery = searchParams.get("search") ?? "";
 
   const { addItem, count: cartCount, total: cartTotal } = useCart();
+  const { isAdmin } = useAuth();
 
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [category, setCategory] = useState<number | "all">("all");
@@ -105,7 +107,11 @@ export default function ProductList({ initialProducts }: ProductListProps) {
         </p>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div
+        className={`grid gap-6 ${
+          isAdmin ? "lg:grid-cols-[1fr_320px]" : "grid-cols-1"
+        }`}
+      >
         <div>
           {loading ? (
             <p className="py-16 text-center text-stone-500">Loading products…</p>
@@ -113,11 +119,14 @@ export default function ProductList({ initialProducts }: ProductListProps) {
             <ProductGrid products={products} onAddToCart={handleAddToCart} />
           )}
         </div>
-        <aside>
-          <Card className="p-5">
-            <AddProductForm onAdd={handleAddProduct} />
-          </Card>
-        </aside>
+        {/* Only admins manage products; ordinary customers don't see this. */}
+        {isAdmin && (
+          <aside>
+            <Card className="p-5">
+              <AddProductForm onAdd={handleAddProduct} />
+            </Card>
+          </aside>
+        )}
       </div>
     </div>
   );

@@ -18,6 +18,8 @@ interface AuthContextValue {
   loading: boolean;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  /** True for roles that can manage products (admin or seller). */
+  isStaff: boolean;
   login: (email: string, password: string) => Promise<User>;
   register: (
     username: string,
@@ -80,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     isAuthenticated: user !== null,
     isAdmin: user?.role === "admin",
+    isStaff: user?.role === "admin" || user?.role === "seller",
     login,
     register,
     logout,
