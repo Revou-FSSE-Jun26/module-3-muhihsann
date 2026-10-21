@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
@@ -34,7 +35,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col bg-stone-50 text-stone-900">
         <AuthProvider>
           <CartProvider>
-            <Header />
+            {/* Header reads URL/auth state (usePathname, useAuth); a Suspense
+                boundary lets the static shell prerender while it streams in. */}
+            <Suspense fallback={<div className="h-[69px] border-b border-stone-200 bg-white" />}>
+              <Header />
+            </Suspense>
             <main className="flex-1">{children}</main>
             <Footer />
           </CartProvider>

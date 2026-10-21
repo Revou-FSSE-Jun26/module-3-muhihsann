@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import ProductGrid from "@/components/ProductGrid";
 import { getProducts } from "@/lib/api";
@@ -7,12 +8,16 @@ export const metadata = {
   description: "RevOnest — everyday essentials across electronics, kitchen, books, and sports.",
 };
 
-// Pure Server Component: fetches products and renders the first 5 as
-// read-only cards (no cart actions on the home page).
-export default async function HomePage() {
+// Async child: fetches products and renders the first 5 as read-only cards.
+// Kept separate so the static hero can prerender while this streams in behind
+// a <Suspense> boundary (required with Cache Components for uncached fetches).
+async function FeaturedProducts() {
   const products = await getProducts();
   const featured = products.slice(0, 5);
+  return <ProductGrid products={featured} showActions={false} />;
+}
 
+export default function HomePage() {
   return (
     <>
       <section className="mx-auto max-w-6xl px-4 py-14">
@@ -52,8 +57,17 @@ export default async function HomePage() {
             View all →
           </Link>
         </div>
-        {/* Read-only cards on the home page (showActions={false}). */}
-        <ProductGrid products={featured} showActions={false} />
+        {/* Read-only cards; streamed in behind Suspense so the hero can
+            prerender without blocking on the products fetch. */}
+        <Suspense
+          fallback={
+            <p className="py-16 text-center text-stone-500">
+              Loading featured products…
+            </p>
+          }
+        >
+          <FeaturedProducts />
+        </Suspense>
       </section>
     </>
   );
