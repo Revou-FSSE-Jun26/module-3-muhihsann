@@ -6,6 +6,7 @@ import Card from "@/components/Card";
 import { ApiError, getOrders, deleteOrder } from "@/lib/api";
 import { formatPrice, getStatusClasses } from "@/lib/ui";
 import { useAuth } from "@/context/AuthContext";
+import { notify } from "@/lib/toast";
 import type { Order } from "@/lib/types";
 
 export default function OrdersPage() {
@@ -47,9 +48,12 @@ export default function OrdersPage() {
     setError(null);
     try {
       await deleteOrder(order.id);
+      notify.success(`Order #${order.id} cancelled.`);
       await load();
     } catch (err) {
-      setError(messageFrom(err));
+      const msg = messageFrom(err);
+      setError(msg);
+      notify.error(msg);
     } finally {
       setDeletingId(null);
     }

@@ -13,6 +13,7 @@ import {
 import * as api from "@/lib/api";
 import type { Product } from "@/lib/types";
 import { useAuth } from "@/context/AuthContext";
+import { notify } from "@/lib/toast";
 
 /** One line in the cart: the product plus how many of it. */
 export interface CartLine {
@@ -77,6 +78,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, userId]);
 
   const addItem = useCallback((product: Product, quantity = 1) => {
+    notify.success(`Added "${product.name}" to cart.`);
     setItems((prev) => {
       const existing = prev.find((l) => l.product.id === product.id);
       if (existing) {
@@ -132,6 +134,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       })),
     });
     clear();
+    notify.success(`Order #${order.id} placed.`);
     return order.id;
   }, [user, items, clear]);
 

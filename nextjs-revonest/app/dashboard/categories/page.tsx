@@ -11,6 +11,7 @@ import {
   updateCategory,
   deleteCategory,
 } from "@/lib/api";
+import { notify } from "@/lib/toast";
 import type { Category } from "@/lib/types";
 
 export default function CategoriesAdminPage() {
@@ -71,9 +72,12 @@ function CategoriesAdmin() {
       });
       setNewName("");
       setNewDescription("");
+      notify.success("Category created.");
       await load();
     } catch (err) {
-      setError(messageFrom(err));
+      const msg = messageFrom(err);
+      setError(msg);
+      notify.error(msg);
     } finally {
       setCreating(false);
     }
@@ -105,9 +109,12 @@ function CategoriesAdmin() {
         description: editDescription.trim() || undefined,
       });
       cancelEdit();
+      notify.success("Category updated.");
       await load();
     } catch (err) {
-      setError(messageFrom(err));
+      const msg = messageFrom(err);
+      setError(msg);
+      notify.error(msg);
     } finally {
       setSavingEdit(false);
     }
@@ -122,9 +129,12 @@ function CategoriesAdmin() {
     setError(null);
     try {
       await deleteCategory(cat.id);
+      notify.success("Category deleted.");
       await load();
     } catch (err) {
-      setError(messageFrom(err));
+      const msg = messageFrom(err);
+      setError(msg);
+      notify.error(msg);
     } finally {
       setDeletingId(null);
     }

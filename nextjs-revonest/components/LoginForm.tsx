@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import PasswordInput from "@/components/PasswordInput";
 import { ApiError } from "@/lib/api";
+import { notify } from "@/lib/toast";
 import type { LoginFormState, LoginFormErrors } from "@/lib/types";
 
 /**
@@ -68,20 +69,23 @@ export default function LoginForm() {
     setSubmitting(true);
     try {
       const user = await login(form.email, form.password);
+      notify.success(`Welcome back, ${user.username}.`);
       // Role-based redirect: admins to the dashboard, customers to home.
       router.push(user.role === "admin" ? "/dashboard" : "/");
     } catch (err) {
       // Distinguish genuine bad credentials (API 401) from a failure to reach
       // the API at all (network error / CORS / server asleep).
+      let msg: string;
       if (err instanceof ApiError && err.status === 401) {
-        setFormError("Invalid email or password. Please try again.");
+        msg = "Invalid email or password. Please try again.";
       } else if (err instanceof ApiError) {
-        setFormError(err.message);
+        msg = err.message;
       } else {
-        setFormError(
-          "Couldn't reach the server. It may be waking up — please try again in a moment."
-        );
+        msg =
+          "Couldn't reach the server. It may be waking up — please try again in a moment.";
       }
+      setFormError(msg);
+      notify.error(msg);
     } finally {
       setSubmitting(false);
     }

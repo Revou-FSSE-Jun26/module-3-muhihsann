@@ -12,6 +12,7 @@ import {
   updateProduct,
   deleteProduct,
 } from "@/lib/api";
+import { notify } from "@/lib/toast";
 import type { Product, Category } from "@/lib/types";
 
 export default function ProductsAdminPage() {
@@ -138,13 +139,17 @@ function ProductsAdmin() {
     try {
       if (editId === null) {
         await createProduct(payload);
+        notify.success("Product created.");
       } else {
         await updateProduct(editId, payload);
+        notify.success("Product updated.");
       }
       resetForm();
       await load();
     } catch (err) {
-      setError(messageFrom(err));
+      const msg = messageFrom(err);
+      setError(msg);
+      notify.error(msg);
     } finally {
       setSaving(false);
     }
@@ -161,9 +166,12 @@ function ProductsAdmin() {
       await deleteProduct(p.id);
       // If we were editing the product we just deleted, clear the form.
       if (editId === p.id) resetForm();
+      notify.success("Product deleted.");
       await load();
     } catch (err) {
-      setError(messageFrom(err));
+      const msg = messageFrom(err);
+      setError(msg);
+      notify.error(msg);
     } finally {
       setDeletingId(null);
     }

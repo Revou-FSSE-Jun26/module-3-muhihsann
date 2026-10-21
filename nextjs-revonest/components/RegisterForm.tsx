@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import PasswordInput from "@/components/PasswordInput";
+import { notify } from "@/lib/toast";
 
 interface RegisterFormState {
   username: string;
@@ -78,13 +79,15 @@ export default function RegisterForm() {
     try {
       // Registering also logs the user in. New accounts are customers.
       const user = await register(form.username, form.email, form.password);
+      notify.success("Account created. Welcome to RevOnest!");
       router.push(user.role === "admin" ? "/dashboard" : "/");
     } catch (err) {
-      setFormError(
+      const msg =
         err instanceof Error
           ? err.message
-          : "Could not create your account. Please try again."
-      );
+          : "Could not create your account. Please try again.";
+      setFormError(msg);
+      notify.error(msg);
     } finally {
       setSubmitting(false);
     }
