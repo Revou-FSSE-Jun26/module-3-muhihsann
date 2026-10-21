@@ -160,6 +160,18 @@ export function deleteCategory(id: number): Promise<{ message: string }> {
 
 /* ---------- Orders ---------- */
 
+// Body for POST /orders. The API takes product_id + quantity per line and
+// computes prices/totals itself.
+export interface CreateOrderInput {
+  user_id: number;
+  items: { product_id: number; quantity: number }[];
+}
+
+// POST /orders — create a pending order from cart contents. Returns the order.
+export function createOrder(input: CreateOrderInput): Promise<Order> {
+  return apiFetch<Order>("/orders", jsonBody("POST", input));
+}
+
 // GET /orders?user_id=N — a single user's orders (customer view).
 export function getOrders(userId: number): Promise<Order[]> {
   return apiFetch<Order[]>(`/orders?user_id=${userId}`);
