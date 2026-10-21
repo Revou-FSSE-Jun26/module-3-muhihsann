@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import CartMenu from "@/components/CartMenu";
 
 /** Internal navigation links shown in the header. */
 const navLinks = [
@@ -70,8 +71,9 @@ export default function Header() {
           </ul>
         </nav>
 
-        {/* Right side: auth state. `loading` avoids a flash before hydration. */}
+        {/* Right side: cart + auth state. `loading` avoids a flash before hydration. */}
         <div className="flex items-center gap-3">
+          <CartMenu />
           {loading ? null : user ? (
             <>
               <span className="hidden text-sm text-stone-600 sm:inline">
