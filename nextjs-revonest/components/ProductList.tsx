@@ -9,16 +9,12 @@ import AddProductForm from "@/components/AddProductForm";
 import Card from "@/components/Card";
 import { getProducts } from "@/lib/api";
 import { formatPrice } from "@/lib/ui";
+import { useCart } from "@/context/CartContext";
 import type { Product } from "@/lib/types";
 
 interface ProductListProps {
   /** Products fetched on the server for the first paint. */
   initialProducts: Product[];
-}
-
-interface CartLine {
-  product: Product;
-  quantity: number;
 }
 
 /**
@@ -35,9 +31,10 @@ export default function ProductList({ initialProducts }: ProductListProps) {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") ?? "";
 
+  const { addItem, count: cartCount, total: cartTotal } = useCart();
+
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [category, setCategory] = useState<number | "all">("all");
-  const [cart, setCart] = useState<CartLine[]>([]);
   const [loading, setLoading] = useState(false);
   // Skip the first refetch — the server already handed us initialProducts.
   const firstRun = useRef(true);
@@ -68,31 +65,15 @@ export default function ProductList({ initialProducts }: ProductListProps) {
     };
   }, [searchQuery, category]);
 
-  // Immutable add-to-cart.
+  // Add to the shared, per-user cart (CartContext).
   function handleAddToCart(product: Product, quantity: number) {
-    setCart((prev) => {
-      const existing = prev.find((line) => line.product.id === product.id);
-      if (existing) {
-        return prev.map((line) =>
-          line.product.id === product.id
-            ? { ...line, quantity: line.quantity + quantity }
-            : line
-        );
-      }
-      return [...prev, { product, quantity }];
-    });
+    addItem(product, quantity);
   }
 
   // Immutable append of a new product (spread pattern).
   function handleAddProduct(product: Product) {
     setProducts((prev) => [product, ...prev]);
   }
-
-  const cartCount = cart.reduce((sum, line) => sum + line.quantity, 0);
-  const cartTotal = cart.reduce(
-    (sum, line) => sum + line.product.price * line.quantity,
-    0
-  );
 
   return (
     <div className="space-y-6">
