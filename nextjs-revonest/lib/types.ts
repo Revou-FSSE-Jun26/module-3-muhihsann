@@ -53,8 +53,11 @@ export interface Category {
 
 export interface OrderItem {
   product_id: number;
+  // GET /orders/:id includes the product name for display.
+  product_name?: string;
   quantity: number;
-  price: number;
+  // The API field is `unit_price`.
+  unit_price: number;
 }
 
 export interface Order {

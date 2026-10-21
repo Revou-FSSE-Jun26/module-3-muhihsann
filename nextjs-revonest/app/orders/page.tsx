@@ -105,7 +105,12 @@ export default function OrdersPage() {
                 className="flex items-center justify-between gap-4 p-5"
               >
                 <div>
-                  <p className="font-bold text-stone-900">Order #{order.id}</p>
+                  <Link
+                    href={`/orders/${order.id}`}
+                    className="font-bold text-stone-900 hover:text-amber-700 hover:underline"
+                  >
+                    Order #{order.id}
+                  </Link>
                   <p className="text-sm text-stone-500">
                     {order.order_date
                       ? new Date(order.order_date).toLocaleDateString()
@@ -123,6 +128,12 @@ export default function OrdersPage() {
                       </p>
                     )}
                   </div>
+                  <Link
+                    href={`/orders/${order.id}`}
+                    className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm font-semibold text-stone-700 transition hover:border-amber-400 hover:text-amber-700"
+                  >
+                    View
+                  </Link>
                   <button
                     onClick={() => handleDelete(order)}
                     disabled={!canDelete || deletingId === order.id}
