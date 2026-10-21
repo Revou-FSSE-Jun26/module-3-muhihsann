@@ -100,6 +100,34 @@ export function getProduct(id: string | number): Promise<Product> {
   return apiFetch<Product>(`/products/${id}`);
 }
 
+// Fields accepted by create/update. `id`/`created_at` are server-managed.
+// Note: the API stores `price` as an integer.
+export interface ProductInput {
+  name: string;
+  description: string;
+  price: number;
+  stock_quantity: number;
+  category_id: number;
+}
+
+// POST /products — returns the created product (201).
+export function createProduct(input: ProductInput): Promise<Product> {
+  return apiFetch<Product>("/products", jsonBody("POST", input));
+}
+
+// PUT /products/:id — returns the updated product.
+export function updateProduct(
+  id: number,
+  input: ProductInput
+): Promise<Product> {
+  return apiFetch<Product>(`/products/${id}`, jsonBody("PUT", input));
+}
+
+// DELETE /products/:id — returns { message }.
+export function deleteProduct(id: number): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/products/${id}`, { method: "DELETE" });
+}
+
 /* ---------- Categories ---------- */
 
 export function getCategories(): Promise<Category[]> {
@@ -132,7 +160,23 @@ export function deleteCategory(id: number): Promise<{ message: string }> {
 
 /* ---------- Orders ---------- */
 
-// The API requires a user_id query param, so default to user 1 for the demo.
-export function getOrders(userId: number = 1): Promise<Order[]> {
+// GET /orders?user_id=N — a single user's orders (customer view).
+export function getOrders(userId: number): Promise<Order[]> {
   return apiFetch<Order[]>(`/orders?user_id=${userId}`);
+}
+
+// GET /orders (no user_id) — every order (admin view).
+export function getAllOrders(): Promise<Order[]> {
+  return apiFetch<Order[]>("/orders");
+}
+
+// GET /orders/:id — a single order with its line items.
+export function getOrder(id: number): Promise<Order> {
+  return apiFetch<Order>(`/orders/${id}`);
+}
+
+// DELETE /orders/:id — returns { message }. The API rejects deletion of any
+// order whose status is not "pending" with a 409.
+export function deleteOrder(id: number): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/orders/${id}`, { method: "DELETE" });
 }

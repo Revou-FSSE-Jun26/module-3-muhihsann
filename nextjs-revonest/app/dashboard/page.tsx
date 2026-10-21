@@ -36,9 +36,12 @@ function DashboardContent() {
           <p className="mt-1 text-sm text-stone-500">
             Create, edit, and remove products.
           </p>
-          <span className="mt-3 inline-block text-xs text-stone-400">
-            Coming next
-          </span>
+          <Link
+            href="/dashboard/products"
+            className="mt-3 inline-block text-xs font-semibold text-amber-700 hover:underline"
+          >
+            Open →
+          </Link>
         </Card>
         <Card className="p-5">
           <h2 className="font-bold text-stone-900">Categories</h2>
