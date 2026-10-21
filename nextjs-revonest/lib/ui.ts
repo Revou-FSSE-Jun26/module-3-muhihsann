@@ -18,3 +18,22 @@ export function getButtonClasses(inStock: boolean): string {
 export function formatPrice(price: number): string {
   return `$${price.toFixed(2)}`;
 }
+
+/** Tailwind classes for an order-status pill, colour-coded by stage. */
+export function getStatusClasses(status: string): string {
+  const base = "rounded-full px-3 py-1 text-xs font-semibold";
+  switch (status) {
+    case "pending":
+      return `${base} bg-amber-100 text-amber-700`;
+    case "processing":
+      return `${base} bg-blue-100 text-blue-700`;
+    case "shipped":
+      return `${base} bg-indigo-100 text-indigo-700`;
+    case "delivered":
+      return `${base} bg-green-100 text-green-700`;
+    case "cancelled":
+      return `${base} bg-stone-200 text-stone-600`;
+    default:
+      return `${base} bg-stone-100 text-stone-600`;
+  }
+}
