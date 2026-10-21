@@ -5,23 +5,19 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
-import { ApiError } from "@/lib/api";
 import { formatPrice } from "@/lib/ui";
 
 /**
  * Header cart button + popover preview. Clicking the button toggles a panel
  * that lists every line in the cart with quantity controls, the running total,
- * and a Checkout button. Checkout is the only action that calls the API.
+ * and a Checkout button that navigates to the dedicated /checkout page.
  */
 export default function CartMenu() {
   const router = useRouter();
   const { user } = useAuth();
-  const { items, count, total, updateQuantity, removeItem, checkout } =
-    useCart();
+  const { items, count, total, updateQuantity, removeItem } = useCart();
 
   const [open, setOpen] = useState(false);
-  const [placing, setPlacing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Close the popover on outside click or Escape.
@@ -46,25 +42,9 @@ export default function CartMenu() {
     };
   }, [open]);
 
-  async function handleCheckout() {
-    if (!user) {
-      setOpen(false);
-      router.push("/login");
-      return;
-    }
-    setPlacing(true);
-    setError(null);
-    try {
-      await checkout();
-      setOpen(false);
-      router.push("/orders");
-    } catch (err) {
-      if (err instanceof ApiError) setError(err.message);
-      else if (err instanceof Error) setError(err.message);
-      else setError("Checkout failed. Please try again.");
-    } finally {
-      setPlacing(false);
-    }
+  function handleCheckout() {
+    setOpen(false);
+    router.push(user ? "/checkout" : "/login");
   }
 
   return (
@@ -92,15 +72,6 @@ export default function CartMenu() {
               {count} item{count === 1 ? "" : "s"}
             </span>
           </div>
-
-          {error && (
-            <div
-              role="alert"
-              className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700"
-            >
-              {error}
-            </div>
-          )}
 
           {items.length === 0 ? (
             <p className="py-6 text-center text-sm text-stone-500">
@@ -188,10 +159,9 @@ export default function CartMenu() {
                 </Link>
                 <button
                   onClick={handleCheckout}
-                  disabled={placing}
-                  className="flex-1 rounded-lg bg-amber-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-amber-700 disabled:opacity-60"
+                  className="flex-1 rounded-lg bg-amber-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-amber-700"
                 >
-                  {placing ? "Placing…" : "Checkout"}
+                  Checkout
                 </button>
               </div>
               {!user && (

@@ -1,39 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Card from "@/components/Card";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
-import { ApiError } from "@/lib/api";
 import { formatPrice } from "@/lib/ui";
 
 export default function CartPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { items, total, updateQuantity, removeItem, clear, checkout } =
-    useCart();
+  const { items, total, updateQuantity, removeItem, clear } = useCart();
 
-  const [placing, setPlacing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleCheckout() {
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-    setPlacing(true);
-    setError(null);
-    try {
-      await checkout();
-      router.push("/orders");
-    } catch (err) {
-      if (err instanceof ApiError || err instanceof Error) setError(err.message);
-      else setError("Checkout failed. Please try again.");
-    } finally {
-      setPlacing(false);
-    }
+  function handleCheckout() {
+    router.push(user ? "/checkout" : "/login");
   }
 
   return (
@@ -41,15 +21,6 @@ export default function CartPage() {
       <h1 className="mb-6 text-2xl font-extrabold tracking-tight sm:text-3xl">
         Your Cart
       </h1>
-
-      {error && (
-        <div
-          role="alert"
-          className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-        >
-          {error}
-        </div>
-      )}
 
       {items.length === 0 ? (
         <Card className="p-8 text-center">
@@ -135,14 +106,9 @@ export default function CartPage() {
               </button>
               <button
                 onClick={handleCheckout}
-                disabled={placing}
-                className="flex-1 rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-700 disabled:opacity-60"
+                className="flex-1 rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-700"
               >
-                {placing
-                  ? "Placing order…"
-                  : user
-                    ? "Checkout"
-                    : "Log in to checkout"}
+                {user ? "Proceed to checkout" : "Log in to checkout"}
               </button>
             </div>
           </Card>
