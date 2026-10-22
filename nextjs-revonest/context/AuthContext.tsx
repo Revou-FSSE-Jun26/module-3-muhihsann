@@ -33,9 +33,13 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  // Starts true and only flips after the component has mounted on the client.
+  // The server render and the first client render are therefore identical
+  // (loading = true, user = null), which avoids a hydration mismatch when the
+  // header reads the persisted session from localStorage.
   const [loading, setLoading] = useState(true);
 
-  // Hydrate the session from localStorage once, on mount.
+  // Hydrate the session from localStorage once, after mount (client only).
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);

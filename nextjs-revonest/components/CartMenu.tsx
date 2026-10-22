@@ -18,7 +18,15 @@ export default function CartMenu() {
   const { items, count, total, updateQuantity, removeItem } = useCart();
 
   const [open, setOpen] = useState(false);
+  // The cart count comes from localStorage, which only exists on the client.
+  // Render the count-dependent UI only after mount so the server and first
+  // client render match (avoids a hydration mismatch).
+  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close the popover on outside click or Escape.
   useEffect(() => {
@@ -53,11 +61,13 @@ export default function CartMenu() {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="true"
         aria-expanded={open}
-        aria-label={`Cart with ${count} item${count === 1 ? "" : "s"}`}
+        aria-label={`Cart with ${mounted ? count : 0} item${
+          mounted && count === 1 ? "" : "s"
+        }`}
         className="relative rounded-lg border border-stone-300 px-3 py-2 text-sm font-semibold text-stone-700 transition hover:border-amber-400 hover:text-amber-700"
       >
         <span aria-hidden="true">🛒</span>
-        {count > 0 && (
+        {mounted && count > 0 && (
           <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-600 px-1 text-[11px] font-bold text-white">
             {count}
           </span>

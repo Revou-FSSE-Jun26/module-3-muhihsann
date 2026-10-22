@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -17,6 +18,15 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isAdmin, logout, loading } = useAuth();
+
+  // Auth state is derived from localStorage, which is client-only. Render the
+  // auth-dependent UI only after mount so the server HTML and the first client
+  // render are identical (prevents a hydration mismatch).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const showAuth = mounted && !loading;
 
   // A link is "active" when the current path matches it (or is nested under it,
   // for everything except the home route).
@@ -52,8 +62,9 @@ export default function Header() {
                 </Link>
               </li>
             ))}
-            {/* Admins get a Dashboard link. */}
-            {isAdmin && (
+            {/* Admins get a Dashboard link. Gated on `showAuth` so the server
+                and first client render match (avoids a hydration mismatch). */}
+            {showAuth && isAdmin && (
               <li>
                 <Link
                   href="/dashboard"
@@ -74,7 +85,7 @@ export default function Header() {
         {/* Right side: cart + auth state. `loading` avoids a flash before hydration. */}
         <div className="flex items-center gap-3">
           <CartMenu />
-          {loading ? null : user ? (
+          {!showAuth ? null : user ? (
             <>
               <span className="hidden text-sm text-stone-600 sm:inline">
                 Hi,{" "}
