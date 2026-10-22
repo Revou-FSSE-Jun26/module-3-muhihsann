@@ -18,14 +18,15 @@ react-hot-toast · Playwright
 ## 📑 Table of Contents
 
 1. [Overview](#-overview)
-2. [Features implemented](#-features-implemented)
-3. [Technologies used](#-technologies-used)
-4. [Getting started](#-getting-started)
-5. [Running the test suite](#-running-the-test-suite)
-6. [Environment variables](#-environment-variables)
-7. [Routes](#-routes)
-8. [Project structure](#-project-structure)
-9. [Screenshots](#-screenshots)
+2. [Checkpoint 3 — what's new](#-checkpoint-3--whats-new)
+3. [Features implemented](#-features-implemented)
+4. [Technologies used](#-technologies-used)
+5. [Getting started (run locally)](#-getting-started-run-locally)
+6. [Running the test suite (test locally)](#-running-the-test-suite-test-locally)
+7. [Environment variables](#-environment-variables)
+8. [Routes](#-routes)
+9. [Project structure](#-project-structure)
+10. [Screenshots](#-screenshots)
 
 ---
 
@@ -42,6 +43,24 @@ Components (for initial data) and Client Components (for interactivity), and
 reads/writes all data through a typed API layer against the Flask backend.
 Authentication state and the cart are persisted in `localStorage`, so sessions
 and carts survive a page refresh.
+
+---
+
+## 🧱 Checkpoint 3 — what's new
+
+Building on the components and routing from Checkpoint 2, this checkpoint adds
+the full logged-in experience and testing:
+
+- **Authentication & role-based access** — register, login, logout, session
+  persistence, and route guards for admin-only pages.
+- **Customer shopping flow** — per-user cart (localStorage), cart page, a
+  dedicated `/checkout` page, order placement via `POST /orders`, a `My Orders`
+  list, order detail, and cancel-while-pending.
+- **Admin dashboard** — full product and category CRUD, plus a read-only
+  overview of all orders.
+- **Toast notifications** on success/error for auth, cart, checkout, and CRUD.
+- **Playwright E2E suite** covering the three graded flows, with a local mock
+  API so tests are deterministic and offline.
 
 ---
 
@@ -107,21 +126,43 @@ and carts survive a page refresh.
 
 ---
 
-## 🚀 Getting started
+## 🚀 Getting started (run locally)
 
 ```bash
-# from the repo root
+# 1. from the repo root, move into the Next.js app
 cd nextjs-revonest
 
-# install dependencies
+# 2. install dependencies
 npm install
 
-# set up the API base URL
-cp .env.example .env.local      # already points at the live API
+# 3. set up the API base URL (already points at the live Flask API)
+cp .env.example .env.local
 
-# run the dev server
+# 4. start the dev server
 npm run dev                      # http://localhost:3000
 ```
+
+Open http://localhost:3000 and log in with one of the demo accounts below.
+
+### Production build
+
+To build and serve the optimized production bundle locally:
+
+```bash
+npm run build                    # compile + type-check (all routes)
+npm run start                    # serve the build at http://localhost:3000
+```
+
+### Available scripts
+
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server (hot reload). |
+| `npm run build` | Production build (compiles and type-checks every route). |
+| `npm run start` | Serve the production build. |
+| `npm run lint` | Run ESLint. |
+| `npm run test:e2e` | Run the Playwright end-to-end suite (headless). |
+| `npm run test:e2e:ui` | Open the Playwright UI runner (watch + debug). |
 
 > **Requirements:** Node.js 18.18+ (20+ recommended) and npm.
 
@@ -139,39 +180,42 @@ npm run dev                      # http://localhost:3000
 
 ---
 
-## 🧪 Running the test suite
+## 🧪 Running the test suite (test locally)
 
-The Playwright suite runs the app against an **in-memory mock of the API**
-(`e2e/mock-server.mjs`), so it's deterministic, offline, and never touches real
-data. Playwright starts the mock and the dev server automatically.
+**Testing approach:** the Playwright suite runs the app against an **in-memory
+mock of the Flask API** (`e2e/mock-server.mjs`). Playwright starts both the mock
+and the dev server automatically, so the suite is **deterministic, offline, and
+never touches real data** — every run starts from the same seeded state.
 
 ```bash
 # from nextjs-revonest/
 
-# install the browser once (first time only)
+# 1. install the Playwright browser once (first time only)
 npx playwright install chromium
 
-# run all tests (headless)
+# 2. run all tests (headless)
 npm run test:e2e
 
-# watch/debug in the Playwright UI
+# optional: watch/debug in the Playwright UI
 npm run test:e2e:ui
 
-# watch the real browser drive the app
+# optional: watch the real browser drive the app
 npx playwright test --headed
 ```
 
-The suite covers three flows:
+A successful run reports **9 passed** across three flows:
 
-- **`e2e/auth.spec.ts`** — register → login, session persistence, invalid
-  credentials, admin redirect, and the logged-out route guard.
-- **`e2e/shopping.spec.ts`** — browse → add to cart → checkout → order appears;
-  empty-cart checkout is disabled.
+- **`e2e/auth.spec.ts`** — register → login, session persistence across refresh,
+  invalid-credentials error, admin→dashboard redirect, and the logged-out route
+  guard.
+- **`e2e/shopping.spec.ts`** — browse → add to cart → checkout → order appears in
+  `/orders`; checkout is disabled when the cart is empty.
 - **`e2e/admin-crud.spec.ts`** — product create/edit/delete and category create
   with duplicate-name rejection.
 
 > `e2e/screenshots.spec.ts` is a utility (not a behavioural test) that
-> regenerates the screenshots below.
+> regenerates the screenshots below:
+> `npx playwright test e2e/screenshots.spec.ts`.
 
 ---
 
