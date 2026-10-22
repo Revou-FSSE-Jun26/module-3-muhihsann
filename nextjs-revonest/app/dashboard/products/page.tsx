@@ -332,7 +332,11 @@ function ProductsAdmin() {
               </thead>
               <tbody className="divide-y divide-stone-100">
                 {products.map((p) => (
-                  <tr key={p.id} className="hover:bg-stone-50/60">
+                  <tr
+                    key={p.id}
+                    data-testid={`product-row-${p.id}`}
+                    className="hover:bg-stone-50/60"
+                  >
                     <td className="px-4 py-3">
                       <p className="font-semibold text-stone-900">{p.name}</p>
                       <p className="max-w-xs truncate text-xs text-stone-500">
@@ -352,6 +356,7 @@ function ProductsAdmin() {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => startEdit(p)}
+                          data-testid={`product-edit-${p.id}`}
                           className="rounded-lg border border-stone-300 px-3 py-1.5 text-xs font-semibold text-stone-700 transition hover:border-amber-400 hover:text-amber-700"
                         >
                           Edit
@@ -359,6 +364,7 @@ function ProductsAdmin() {
                         <button
                           onClick={() => handleDelete(p)}
                           disabled={deletingId === p.id}
+                          data-testid={`product-delete-${p.id}`}
                           className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:border-red-400 hover:bg-red-50 disabled:opacity-60"
                         >
                           {deletingId === p.id ? "Deleting…" : "Delete"}

@@ -5,3 +5,8 @@ node_modules/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Playwright output (can be generated at the repo root when run from here)
+test-results/
+playwright-report/
+blob-report/
