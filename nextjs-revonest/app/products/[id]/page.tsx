@@ -1,8 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import Card from "@/components/Card";
 import { getProduct } from "@/lib/api";
 import { formatPrice } from "@/lib/ui";
+import { productImage } from "@/lib/productImages";
 
 type Params = Promise<{ id: string }>;
 
@@ -43,6 +45,17 @@ export default async function ProductDetailPage({
       </Link>
 
       <Card className="mt-4 p-8">
+        <div className="relative mb-6 aspect-[3/2] w-full overflow-hidden rounded-xl bg-stone-100">
+          <Image
+            src={productImage(product.name)}
+            alt={product.name}
+            fill
+            sizes="(max-width: 768px) 100vw, 672px"
+            className="object-cover"
+            priority
+          />
+        </div>
+
         <div className="mb-3 flex items-start justify-between gap-3">
           <h1 className="text-3xl font-extrabold tracking-tight">
             {product.name}
@@ -63,17 +76,6 @@ export default async function ProductDetailPage({
         <p className="mt-6 text-4xl font-extrabold text-stone-900">
           {formatPrice(product.price)}
         </p>
-
-        <dl className="mt-6 grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <dt className="text-stone-500">Product ID</dt>
-            <dd className="font-semibold">{product.id}</dd>
-          </div>
-          <div>
-            <dt className="text-stone-500">Category ID</dt>
-            <dd className="font-semibold">{product.category_id}</dd>
-          </div>
-        </dl>
       </Card>
     </div>
   );

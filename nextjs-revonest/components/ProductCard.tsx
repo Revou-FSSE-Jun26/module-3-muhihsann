@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Card from "@/components/Card";
 import { getButtonClasses, formatPrice } from "@/lib/ui";
+import { productImage } from "@/lib/productImages";
 import type { ProductCardProps } from "@/lib/types";
 
 /**
@@ -25,6 +27,17 @@ export default function ProductCard({
 
   return (
     <Card className="flex h-full flex-col p-5">
+      {/* Product image (resolved by name; falls back to a named placeholder). */}
+      <div className="relative mb-4 aspect-[3/2] w-full overflow-hidden rounded-xl bg-stone-100">
+        <Image
+          src={productImage(product.name)}
+          alt={product.name}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover"
+        />
+      </div>
+
       {/* Header: name + stock badge (conditional rendering on stock state) */}
       <div className="mb-2 flex items-start justify-between gap-2">
         <h3 className="text-lg font-bold text-stone-900">{product.name}</h3>
