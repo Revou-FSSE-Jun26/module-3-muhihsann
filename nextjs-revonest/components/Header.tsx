@@ -90,7 +90,8 @@ export default function Header() {
 
         {/* Right side: cart + auth state. `loading` avoids a flash before hydration. */}
         <div className="flex items-center gap-3">
-          {!adminView && <CartMenu />}
+          {/* Only customers shop, so only they get the cart. */}
+          {showAuth && user?.role === "customer" && <CartMenu />}
           {!showAuth ? null : user ? (
             <>
               <span className="hidden text-sm text-stone-600 sm:inline">

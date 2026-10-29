@@ -45,7 +45,8 @@ export default function ProductList({ initialProducts }: ProductListProps) {
   const categoryId = parseCategoryParam(searchParams.get("category"));
 
   const { addItem, count: cartCount, total: cartTotal } = useCart();
-  const { isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
+  const isCustomer = user?.role === "customer";
 
   const [products, setProducts] = useState<Product[]>(initialProducts);
   // Live value of the search box (may run ahead of the URL while typing).
@@ -152,8 +153,8 @@ export default function ProductList({ initialProducts }: ProductListProps) {
             onChange={handleCategoryChange}
           />
         </div>
-        {/* Cart summary — hidden for admins, who don't shop. */}
-        {!isAdmin && (
+        {/* Cart summary — customers only (guests and admins don't shop). */}
+        {isCustomer && (
           <div className="flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800">
             <span aria-hidden="true">🛒</span>
             <span>{cartCount}</span>

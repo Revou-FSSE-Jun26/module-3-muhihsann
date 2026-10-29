@@ -24,12 +24,23 @@ export default function ProductCard({
   onAddToCart,
 }: ProductCardProps) {
   const [quantity, setQuantity] = useState(initialQuantity);
-  const { isAdmin, loading: authLoading } = useAuth();
+  const { user, isAdmin, loading: authLoading } = useAuth();
 
   const inStock = product.stock_quantity > 0;
-  // Admins manage the catalog but don't shop, so they get no cart controls.
-  // Gated on authLoading so the server and first client render match.
-  const adminView = !authLoading && isAdmin;
+
+  // Who is looking at the card decides which actions it shows:
+  //  - "pending":  session not read yet (server render + first client paint).
+  //                Shows the shopping controls disabled, so nothing jumps.
+  //  - "guest":    logged out -> a "Login to buy" link instead of Add to cart.
+  //  - "customer": quantity counter + Add to cart.
+  //  - "admin":    admins don't shop -> link to the dashboard instead.
+  const viewer = authLoading
+    ? "pending"
+    : !user
+      ? "guest"
+      : isAdmin
+        ? "admin"
+        : "customer";
 
   return (
     <Card className="flex h-full flex-col p-5">
@@ -64,8 +75,18 @@ export default function ProductCard({
         {formatPrice(product.price)}
       </p>
 
+      {/* Guests: "Login to buy" instead of the Add to cart button. */}
+      {showActions && viewer === "guest" && (
+        <Link
+          href="/login"
+          className="mt-auto block rounded-lg border border-amber-600 px-4 py-2 text-center text-sm font-semibold text-amber-700 transition hover:bg-amber-50"
+        >
+          Login to buy
+        </Link>
+      )}
+
       {/* Admins: link to the dashboard instead of shopping controls. */}
-      {showActions && adminView && (
+      {showActions && viewer === "admin" && (
         <Link
           href="/dashboard/products"
           className="mt-auto block rounded-lg border border-stone-300 px-4 py-2 text-center text-sm font-semibold text-stone-700 transition hover:border-amber-400 hover:text-amber-700"
@@ -74,8 +95,8 @@ export default function ProductCard({
         </Link>
       )}
 
-      {/* Shopping actions (customers and visitors) */}
-      {showActions && !adminView && (
+      {/* Shopping actions (customers; disabled while the session loads) */}
+      {showActions && (viewer === "customer" || viewer === "pending") && (
         <div className="mt-auto space-y-3">
           {/* Quantity counter — disabled when out of stock */}
           <div className="flex items-center gap-3">
@@ -84,7 +105,7 @@ export default function ProductCard({
               <button
                 type="button"
                 aria-label="Decrease quantity"
-                disabled={!inStock || quantity <= 1}
+                disabled={viewer === "pending" || !inStock || quantity <= 1}
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                 className="px-3 py-1 text-lg font-semibold text-stone-600 disabled:cursor-not-allowed disabled:text-stone-300"
               >
@@ -96,7 +117,11 @@ export default function ProductCard({
               <button
                 type="button"
                 aria-label="Increase quantity"
-                disabled={!inStock || quantity >= product.stock_quantity}
+                disabled={
+                  viewer === "pending" ||
+                  !inStock ||
+                  quantity >= product.stock_quantity
+                }
                 onClick={() =>
                   setQuantity((q) => Math.min(product.stock_quantity, q + 1))
                 }
@@ -110,7 +135,7 @@ export default function ProductCard({
           {/* Add-to-cart button: classes + label driven by stock state */}
           <button
             type="button"
-            disabled={!inStock}
+            disabled={viewer === "pending" || !inStock}
             onClick={() => onAddToCart?.(product, quantity)}
             className={getButtonClasses(inStock)}
           >

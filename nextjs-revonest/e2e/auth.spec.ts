@@ -45,6 +45,17 @@ test.describe("Authentication", () => {
     await expect(page).toHaveURL("/login");
   });
 
+  test("logged-out visitor sees 'Login to buy' instead of Add to cart", async ({ page }) => {
+    await page.goto("/products");
+    await expect(page.getByText("Wireless Mouse").first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "Add to cart" })).toHaveCount(0);
+
+    const loginToBuy = page.getByRole("link", { name: "Login to buy" }).first();
+    await expect(loginToBuy).toBeVisible();
+    await loginToBuy.click();
+    await expect(page).toHaveURL("/login");
+  });
+
   test("logged-out visitor is redirected from customer pages to login", async ({ page }) => {
     for (const path of ["/cart", "/checkout", "/orders"]) {
       await page.goto(path);
