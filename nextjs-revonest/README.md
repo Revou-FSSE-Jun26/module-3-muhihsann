@@ -194,6 +194,7 @@ npm run start     # serve the build at http://localhost:3000
 | `npm run lint` | Run ESLint. |
 | `npm run test:e2e` | Run the Playwright end-to-end tests. |
 | `npm run test:e2e:ui` | Open Playwright's UI to watch and debug tests. |
+| `npm run test:e2e:live` | Run the end-to-end tests against the live Vercel site. |
 
 ---
 
@@ -231,6 +232,44 @@ A full run reports **22 passed**:
 
 > `e2e/screenshots.spec.ts` isn't a test. It regenerates the screenshots in
 > this README: `npx playwright test e2e/screenshots.spec.ts`.
+
+### Against the live Vercel site
+
+A second suite in `e2e-live/` runs the same three flows against the deployed
+site, <https://revonest.vercel.app>, and the real Flask API. It has its own
+config (`playwright.live.config.ts`), so `npm run test:e2e` never touches real
+data.
+
+```bash
+# from nextjs-revonest/
+npm run test:e2e:live
+
+# open the report from the last live run
+npx playwright show-report playwright-report-live
+```
+
+A full run reports **17 passed**:
+
+| File | Tests | What it covers |
+| --- | --- | --- |
+| `e2e-live/auth.live.spec.ts` | 7 | Registering a new customer, then logging out; customer login surviving a refresh; invalid credentials; admin login; redirects for logged-out users, logged-in users, and customers on admin pages |
+| `e2e-live/shopping.live.spec.ts` | 4 | Browsing, live search, category filter, and product detail; products → add to cart → cart → checkout → the order in `/orders` and its detail page; empty-cart checkout |
+| `e2e-live/admin-crud.live.spec.ts` | 6 | Product create, edit, and delete; category create, rename, and delete; delete refused for a product with active orders and for a category with products; read-only orders overview; admins can't shop |
+
+**What a live run changes in the real database:**
+
+- **Removed again:** the test product, test category, and test order are
+  deleted at the end of each test, through the UI, or through the API if the
+  test failed partway.
+- **Left behind:** one test customer per run (`e2e_<timestamp>`,
+  `e2e+<timestamp>@test.com`), because the API has no way to delete users. The
+  test order also lowers one product's stock by 1, because cancelling an order
+  doesn't restore stock in the backend.
+- **Read-only:** the "delete refused" tests pick a product and a category the
+  backend won't delete, so nothing changes.
+
+The suite wakes the Render backend before starting and allows extra time per
+test, since the free tier sleeps when idle.
 
 ---
 
@@ -294,8 +333,10 @@ nextjs-revonest/
 │                             # errors.ts, productImages.ts, toast.ts, ui.ts
 ├── public/images/            # product photos
 ├── e2e/                      # Playwright tests + mock API server
+├── e2e-live/                 # Playwright tests against the live Vercel site
 ├── screenshots/              # images used in this README
-├── playwright.config.ts
+├── playwright.config.ts      # local tests (mock API)
+├── playwright.live.config.ts # live tests (revonest.vercel.app)
 ├── next.config.ts
 └── .env.example
 ```
@@ -406,7 +447,25 @@ Read-only orders overview:
 
 ![Admin orders](screenshots/admin-06-orders.png)
 
-### End-to-end tests
+### End-to-end tests against the live Vercel site
+
+`npm run test:e2e:live`: all 17 tests passing against
+<https://revonest.vercel.app>. Each test carries the `revonest.vercel.app`
+badge, which shows the site it ran against.
+
+![Live E2E report](screenshots/e2e-live-01-report-overview.png)
+
+By flow: registration and login, browsing and shopping, admin dashboard.
+
+![Live auth tests](screenshots/e2e-live-02-auth.png)
+![Live shopping tests](screenshots/e2e-live-03-shopping.png)
+![Live admin tests](screenshots/e2e-live-04-admin-crud.png)
+
+The checkout test opened, showing each step it ran on the live site:
+
+![Live checkout test steps](screenshots/e2e-live-05-checkout-steps.png)
+
+### End-to-end tests (local, mock API)
 
 Playwright report, all 22 tests passing:
 
