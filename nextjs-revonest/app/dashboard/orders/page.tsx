@@ -1,81 +1,63 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import RouteGuard from "@/components/RouteGuard";
 import Card from "@/components/Card";
-import { ApiError, getAllOrders, deleteOrder } from "@/lib/api";
+import DashboardShell from "@/components/dashboard/DashboardShell";
+import { getAllOrders, getOrder } from "@/lib/api";
+import { apiErrorMessage } from "@/lib/errors";
 import { formatPrice, getStatusClasses } from "@/lib/ui";
-import { notify } from "@/lib/toast";
 import type { Order } from "@/lib/types";
 
+// Admin-only. Logged-out visitors go to /login, customers to /.
 export default function OrdersAdminPage() {
   return (
     <RouteGuard requireRole="admin">
-      <OrdersAdmin />
+      <OrdersOverview />
     </RouteGuard>
   );
 }
 
-function OrdersAdmin() {
+/**
+ * Read-only overview of every order from every user, with each order's
+ * product list (from order_items) and total.
+ *
+ * GET /orders doesn't include line items, so after loading the list we fetch
+ * each order's details (GET /orders/[id]) in parallel. If one detail request
+ * fails, that row still shows, just without its product list.
+ */
+function OrdersOverview() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-
-  async function load() {
-    setLoading(true);
-    setError(null);
-    try {
-      setOrders(await getAllOrders());
-    } catch (err) {
-      setError(messageFrom(err));
-    } finally {
-      setLoading(false);
-    }
-  }
 
   useEffect(() => {
-    load();
+    let active = true;
+    (async () => {
+      try {
+        const list = await getAllOrders();
+        const details = await Promise.allSettled(list.map((o) => getOrder(o.id)));
+        const withItems = list.map((o, i) => {
+          const d = details[i];
+          return d.status === "fulfilled" ? { ...o, items: d.value.items } : o;
+        });
+        if (active) setOrders(withItems.sort((a, b) => a.id - b.id));
+      } catch (err) {
+        if (active) setError(apiErrorMessage(err));
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
   }, []);
 
-  async function handleDelete(order: Order) {
-    const ok = window.confirm(
-      `Delete order #${order.id}? This cannot be undone.`
-    );
-    if (!ok) return;
-    setDeletingId(order.id);
-    setError(null);
-    try {
-      await deleteOrder(order.id);
-      notify.success(`Order #${order.id} deleted.`);
-      await load();
-    } catch (err) {
-      const msg = messageFrom(err);
-      setError(msg);
-      notify.error(msg);
-    } finally {
-      setDeletingId(null);
-    }
-  }
-
   return (
-    <section className="mx-auto max-w-5xl px-4 py-10">
-      <div className="mb-6">
-        <Link
-          href="/dashboard"
-          className="text-xs font-semibold text-amber-700 hover:underline"
-        >
-          ← Back to dashboard
-        </Link>
-        <h1 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
-          Orders
-        </h1>
-        <p className="mt-1 text-stone-500">
-          All customer orders. Only pending orders can be deleted.
-        </p>
-      </div>
-
+    <DashboardShell
+      title="Orders"
+      description="Every order from every customer. This view is read-only."
+    >
       {error && (
         <div
           role="alert"
@@ -87,87 +69,63 @@ function OrdersAdmin() {
 
       <Card className="overflow-hidden">
         {loading ? (
-          <p className="px-5 py-8 text-center text-stone-500">
-            Loading orders…
-          </p>
+          <p className="px-5 py-8 text-center text-stone-500">Loading orders…</p>
         ) : orders.length === 0 ? (
           <p className="px-5 py-8 text-center text-stone-500">No orders yet.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
+              <caption className="sr-only">All orders</caption>
               <thead className="border-b border-stone-200 bg-stone-50 text-xs uppercase tracking-wide text-stone-500">
                 <tr>
-                  <th className="px-4 py-3 font-semibold">Order</th>
-                  <th className="px-4 py-3 font-semibold">User</th>
-                  <th className="px-4 py-3 font-semibold">Date</th>
-                  <th className="px-4 py-3 font-semibold">Status</th>
-                  <th className="px-4 py-3 text-right font-semibold">Total</th>
-                  <th className="px-4 py-3 text-right font-semibold">Actions</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Order</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">User ID</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Products</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Status</th>
+                  <th scope="col" className="px-4 py-3 text-right font-semibold">Total</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100">
-                {orders.map((order) => {
-                  const canDelete = order.status === "pending";
-                  return (
-                    <tr key={order.id} className="hover:bg-stone-50/60">
-                      <td className="px-4 py-3 font-semibold text-stone-900">
-                        #{order.id}
-                      </td>
-                      <td className="px-4 py-3 text-stone-600">
-                        {order.user_id}
-                      </td>
-                      <td className="px-4 py-3 text-stone-600">
+                {orders.map((order) => (
+                  <tr key={order.id} data-testid={`order-row-${order.id}`} className="align-top">
+                    <td className="px-4 py-3">
+                      <p className="font-semibold text-stone-900">#{order.id}</p>
+                      <p className="text-xs text-stone-500">
                         {order.order_date
                           ? new Date(order.order_date).toLocaleDateString()
                           : "—"}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={getStatusClasses(order.status)}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-stone-900">
-                        {typeof order.total_amount === "number"
-                          ? formatPrice(order.total_amount)
-                          : "—"}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex justify-end">
-                          <button
-                            onClick={() => handleDelete(order)}
-                            disabled={!canDelete || deletingId === order.id}
-                            title={
-                              canDelete
-                                ? "Delete this pending order"
-                                : "Only pending orders can be deleted"
-                            }
-                            className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:border-red-400 hover:bg-red-50 disabled:cursor-not-allowed disabled:border-stone-200 disabled:text-stone-300 disabled:hover:bg-transparent"
-                          >
-                            {deletingId === order.id ? "Deleting…" : "Delete"}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                      </p>
+                    </td>
+                    <td className="px-4 py-3 text-stone-600">{order.user_id}</td>
+                    <td className="px-4 py-3">
+                      {order.items && order.items.length > 0 ? (
+                        <ul className="space-y-0.5">
+                          {order.items.map((item, i) => (
+                            <li key={`${item.product_id}-${i}`} className="text-stone-700">
+                              {item.product_name ?? `Product #${item.product_id}`}
+                              <span className="text-stone-400"> × {item.quantity}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span className="text-stone-400">Couldn&apos;t load items</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={getStatusClasses(order.status)}>{order.status}</span>
+                    </td>
+                    <td className="px-4 py-3 text-right font-semibold text-stone-900">
+                      {typeof order.total_amount === "number"
+                        ? formatPrice(order.total_amount)
+                        : "—"}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         )}
       </Card>
-    </section>
+    </DashboardShell>
   );
-}
-
-/** Turn an unknown thrown value into a user-friendly message. */
-function messageFrom(err: unknown): string {
-  if (err instanceof ApiError) {
-    if (err.status === 409)
-      return "That order can't be deleted — it is already being processed.";
-    return err.message;
-  }
-  if (err instanceof Error && err.message) {
-    return "Couldn't reach the server. Please try again in a moment.";
-  }
-  return "Something went wrong. Please try again.";
 }
