@@ -15,7 +15,7 @@ react-hot-toast · Playwright · Vercel
 
 | | |
 | --- | --- |
-| **Live demo (Vercel)** | _Added after deployment_ |
+| **Live demo (Vercel)** | <https://revonest.vercel.app> |
 | **Frontend repository** | <https://github.com/muhihsann/RevOnest-Frontend> |
 | **Backend API (live)** | <https://revoshop-sgjp.onrender.com> |
 | **Backend source (Module 2)** | <https://github.com/Revou-FSSE-Jun26/module-2-muhihsann> |
