@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import RegisterForm from "@/components/RegisterForm";
+import GuestOnly from "@/components/GuestOnly";
 
 export const metadata: Metadata = {
   title: "Register",
   description: "Create a RevOnest account.",
 };
 
+// Logged-in users are redirected away (see GuestOnly).
 export default function RegisterPage() {
   return (
+    <GuestOnly>
     <section className="mx-auto flex max-w-md flex-col px-4 py-16">
       <div className="rounded-2xl border border-stone-200 bg-white p-8 shadow-sm">
         <h1 className="text-2xl font-extrabold tracking-tight">
@@ -35,5 +38,6 @@ export default function RegisterPage() {
         ← Back to store
       </Link>
     </section>
+    </GuestOnly>
   );
 }

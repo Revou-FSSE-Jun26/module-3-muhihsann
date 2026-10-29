@@ -41,7 +41,7 @@ export default function Header() {
 
   function handleLogout() {
     logout();
-    router.push("/");
+    router.push("/login");
   }
 
   return (
