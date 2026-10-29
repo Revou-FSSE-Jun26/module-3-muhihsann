@@ -1,112 +1,130 @@
 # ▲ RevOnest — Next.js Storefront
 
-RevOnest is a full-stack e-commerce storefront built with **Next.js 16 (App
-Router)**, talking to a **Flask REST API** for live data. It supports two
-logged-in roles — **customer** and **admin** — with role-based routing, a
-persistent shopping cart, checkout, order management, and a full admin
-dashboard for product and category CRUD.
+RevOnest is the frontend for **RevoShop**, a fictional online store. It is built
+with **Next.js 16 (App Router)**, **TypeScript**, and **Tailwind CSS**, and talks
+to the **Flask REST API** from the backend module for all of its data.
 
-This is the complete Checkpoint 3 application: fundamentals (Checkpoint 1) +
-components & routing (Checkpoint 2) + authentication, full backend integration,
-and end-to-end testing (Checkpoint 3).
+It serves three kinds of visitors: people browsing while **logged out**,
+**customers** who shop and place orders, and **admins** who manage products,
+categories, and orders.
 
 **Built with:** Next.js 16 · React 19 · TypeScript 5 · Tailwind CSS 4 ·
-react-hot-toast · Playwright
+react-hot-toast · Playwright · Vercel
+
+## 🔗 Links
+
+| | |
+| --- | --- |
+| **Live demo (Vercel)** | _Added after deployment_ |
+| **Frontend repository** | <https://github.com/muhihsann/RevOnest-Frontend> |
+| **Backend API (live)** | <https://revoshop-sgjp.onrender.com> |
+| **Backend source (Module 2)** | <https://github.com/Revou-FSSE-Jun26/module-2-muhihsann> |
+
+> The backend runs on Render's free tier and **sleeps when idle**. The first
+> request after a quiet period can take about 30 seconds while it wakes up.
 
 ---
 
 ## 📑 Table of Contents
 
 1. [Overview](#-overview)
-2. [Checkpoint 3 — what's new](#-checkpoint-3--whats-new)
-3. [Features implemented](#-features-implemented)
-4. [Technologies used](#-technologies-used)
-5. [Getting started (run locally)](#-getting-started-run-locally)
-6. [Running the test suite (test locally)](#-running-the-test-suite-test-locally)
-7. [Environment variables](#-environment-variables)
-8. [Routes](#-routes)
-9. [Project structure](#-project-structure)
+2. [Features implemented](#-features-implemented)
+3. [Technologies used](#-technologies-used)
+4. [Run the project locally](#-run-the-project-locally)
+5. [Run the test suite](#-run-the-test-suite)
+6. [Environment variables](#-environment-variables)
+7. [Routes and access](#-routes-and-access)
+8. [Project structure](#-project-structure)
+9. [Known limitations](#-known-limitations)
 10. [Screenshots](#-screenshots)
 
 ---
 
 ## 🔭 Overview
 
-RevOnest is an online store for everyday essentials (electronics, kitchen,
-books, sports). Visitors can browse products and categories; registered
-**customers** can build a cart, check out, and manage their own orders;
-**admins** get a protected dashboard to manage the catalog and view every
-order.
+RevOnest sells everyday essentials across four categories: electronics, home &
+kitchen, books, and sports. Anyone can browse the catalog, search it, and
+filter by category. Customers can register, keep a cart that survives page
+refreshes, check out, and follow their orders. Admins get a dashboard for
+managing the catalog and seeing every order.
 
-The frontend is a Next.js App Router app that renders a mix of Server
-Components (for initial data) and Client Components (for interactivity), and
-reads/writes all data through a typed API layer against the Flask backend.
-Authentication state and the cart are persisted in `localStorage`, so sessions
-and carts survive a page refresh.
+Under the hood it mixes **Server Components**, which fetch the first page of
+data, with **Client Components** for anything interactive. Every request goes
+through a single typed API layer (`lib/api.ts`), whose base URL comes from
+`NEXT_PUBLIC_API_BASE_URL`. The logged-in session and each customer's cart are
+stored in `localStorage`.
 
----
+The project was built in three checkpoints in this one repository:
 
-## 🧱 Checkpoint 3 — what's new
-
-Building on the components and routing from Checkpoint 2, this checkpoint adds
-the full logged-in experience and testing:
-
-- **Authentication & role-based access** — register, login, logout, session
-  persistence, and route guards for admin-only pages.
-- **Customer shopping flow** — per-user cart (localStorage), cart page, a
-  dedicated `/checkout` page, order placement via `POST /orders`, a `My Orders`
-  list, order detail, and cancel-while-pending.
-- **Admin dashboard** — full product and category CRUD, plus a read-only
-  overview of all orders.
-- **Toast notifications** on success/error for auth, cart, checkout, and CRUD.
-- **Playwright E2E suite** covering the three graded flows, with a local mock
-  API so tests are deterministic and offline.
+| Checkpoint | Focus |
+| --- | --- |
+| 1 | HTML, CSS, and JavaScript fundamentals, TypeScript, Tailwind CSS |
+| 2 | React components, Next.js App Router, API integration |
+| 3 | Forms, authentication, full backend integration, testing |
 
 ---
 
 ## ✨ Features implemented
 
-### Authentication & roles
-- **Register** (`/register`) with full client-side validation; a successful
-  sign-up logs the user in and redirects.
-- **Login** (`/login`) with a show/hide password toggle; invalid credentials
-  surface a clear error. Role-based redirect: **admin → `/dashboard`**,
-  **customer → `/`**.
-- Session persisted in `localStorage`; the header shows the logged-in username
-  and role badge and survives a refresh.
-- **Route guards** redirect logged-out and non-admin users away from protected
-  pages (`/dashboard`, `/dashboard/*`).
+### Everyone (logged out)
+- **Home** (`/`) with featured products.
+- **Product listing** (`/products`) with **live search by name** and a
+  **category filter**. They work together, and both are kept in the URL
+  (`/products?search=mouse&category=1`), so filtered views can be shared and the
+  back button works.
+- **Product detail** (`/products/[id]`) showing name, price, stock, and
+  category. The browser tab title is the product's name.
+- **Categories** (`/categories`): each card shows its product count and opens
+  the catalog filtered to that category.
+- Product cards show a **Login to buy** link instead of Add to cart.
+- **Register** (`/register`) and **login** (`/login`). New accounts are always
+  customers. After logging in, admins go to `/dashboard` and customers to `/`.
+- `/cart`, `/checkout`, `/orders`, and `/dashboard/*` redirect to `/login`.
 
-### Customer
-- Browse the catalog (`/products`) with live search and category filtering.
-- **Add to cart** from any product card; the cart is **per-user** and persisted
-  in `localStorage` (each account keeps its own cart in the browser).
-- Header **cart preview** popover: view items, change quantities, remove lines,
-  see the running total.
-- Full **cart page** (`/cart`) with an empty state and a disabled checkout
-  button when the cart is empty.
-- **Checkout** (`/checkout`) confirms the order via `POST /orders`, clears the
-  cart, and redirects to `/orders`.
-- **My Orders** (`/orders`) lists the customer's own orders; **order detail**
-  (`/orders/[id]`) shows line items. Customers can **cancel only pending**
-  orders.
+### Customers
+- **Add to cart** from any product card, with a quantity picker.
+- A **cart preview** in the header, and a full **cart page** (`/cart`) with
+  quantities, subtotals, the total, a remove button per item, and an empty
+  state.
+- The cart is **per account** and **survives refreshes** (`localStorage`).
+- **Checkout** (`/checkout`) shows the full order summary. The button is
+  disabled when the cart is empty. Confirming calls `POST /orders`, clears the
+  cart, and goes to `/orders`.
+- **My orders** (`/orders`) lists only the logged-in customer's orders. Each
+  one opens **order detail** (`/orders/[id]`) with its products, quantities, and
+  total. Pending orders can be cancelled.
+- Visiting `/login` or `/register` while logged in redirects to `/`.
+- **Log out** clears the session and goes to `/login`.
+- `/dashboard/*` redirects customers to `/`.
 
-### Admin
-- **Dashboard** (`/dashboard`) — admin-only landing with links to each area.
-- **Product CRUD** (`/dashboard/products`) — create, edit, and delete products;
-  deletion is blocked by the API when a product has active orders.
-- **Category CRUD** (`/dashboard/categories`) — create, edit, and delete
-  categories; duplicate names are rejected with a clear error.
-- **Orders overview** (`/dashboard/orders`) — read-only view of **all**
-  customers' orders; only pending orders can be deleted (enforced on the
-  backend).
+### Admins
+Admins manage the store but don't shop, so they have no cart. Product cards
+show **Manage in dashboard** instead, and customer pages redirect to
+`/dashboard`.
 
-### UX & quality
-- **Toast notifications** (react-hot-toast) on success and error across auth,
-  cart, checkout, and all CRUD actions.
-- Per-route **`loading.tsx`** skeletons and **`error.tsx`** boundaries.
-- **Playwright E2E suite** covering the registration/login flow, the full
-  shopping journey, and the admin CRUD journey.
+- **Product management** (`/dashboard`): a table of every product with **Edit**
+  and **Delete** on each row.
+  - **CreateProductForm** opens in a modal and submits to `POST /products`.
+  - **EditProductForm** opens in a modal, loads the product from
+    `GET /products/[id]`, and submits to `PUT /products/[id]`.
+  - **Delete** asks for confirmation inline, then calls `DELETE /products/[id]`.
+    If the product has active orders, the backend refuses with a 400 and its
+    message is shown.
+- **Category management** (`/dashboard/categories`): the same table layout.
+  - **CreateCategoryForm** and **EditCategoryForm** have a single name field
+    and open in a modal (`POST` / `PUT /categories`).
+  - Duplicate names are rejected, and deleting a category that still has
+    products shows the backend's error.
+- **Orders overview** (`/dashboard/orders`): a **read-only** table of every
+  order from every user, with order ID, user ID, the products in the order,
+  status, and total.
+
+### Across the app
+- **Toast notifications** for success and failure on login, registration, cart
+  actions, checkout, and every create, edit, and delete.
+- **Loading skeletons** (`loading.tsx`) and **friendly error pages**
+  (`error.tsx`) on the data-fetching routes.
+- **Product photos** served locally from `public/images`.
 
 ---
 
@@ -119,57 +137,36 @@ the full logged-in experience and testing:
 | Language | **TypeScript 5** |
 | Styling | **Tailwind CSS 4** |
 | Notifications | **react-hot-toast** |
-| Routing / navigation | **`next/navigation`** (`useRouter`, `usePathname`, `useSearchParams`, `useParams`) |
-| Session / cart persistence | **`localStorage`** |
-| API configuration | **`NEXT_PUBLIC_API_BASE_URL`** |
+| Routing and navigation | **`next/navigation`** (`useRouter`, `usePathname`, `useSearchParams`, `useParams`) |
+| Session and cart persistence | **`localStorage`** |
+| API configuration | **`NEXT_PUBLIC_API_BASE_URL`** environment variable |
 | End-to-end testing | **Playwright** |
+| Deployment | **Vercel** |
 
 ---
 
-## 🚀 Getting started (run locally)
+## 🚀 Run the project locally
+
+**Requirements:** Node.js 18.18 or newer (20+ recommended) and npm.
 
 ```bash
-# 1. from the repo root, move into the Next.js app
-cd nextjs-revonest
+# 1. Clone the repository and move into the Next.js app
+git clone https://github.com/muhihsann/RevOnest-Frontend.git
+cd RevOnest-Frontend/nextjs-revonest
 
-# 2. install dependencies
+# 2. Install dependencies
 npm install
 
-# 3. set up the API base URL (already points at the live Flask API)
-cp .env.example .env.local
+# 3. Create your local environment file
+#    (the example already points at the live Flask API)
+cp .env.example .env.local        # Windows PowerShell: Copy-Item .env.example .env.local
 
-# 4. start the dev server
-npm run dev                      # http://localhost:3000
+# 4. Start the dev server
+npm run dev
 ```
 
-Open http://localhost:3000 and log in with one of the demo accounts below.
-
-### Production build
-
-To build and serve the optimized production bundle locally:
-
-```bash
-npm run build                    # compile + type-check (all routes)
-npm run start                    # serve the build at http://localhost:3000
-```
-
-### Available scripts
-
-| Script | What it does |
-| --- | --- |
-| `npm run dev` | Start the dev server (hot reload). |
-| `npm run build` | Production build (compiles and type-checks every route). |
-| `npm run start` | Serve the production build. |
-| `npm run lint` | Run ESLint. |
-| `npm run test:e2e` | Run the Playwright end-to-end suite (headless). |
-| `npm run test:e2e:ui` | Open the Playwright UI runner (watch + debug). |
-
-> **Requirements:** Node.js 18.18+ (20+ recommended) and npm.
-
-> **About the API:** data comes from the Flask API at
-> `https://revoshop-sgjp.onrender.com`. It's on a free tier, so the **first
-> request after an idle period may take a few seconds** to wake up — this is
-> what the `loading.tsx` / `error.tsx` states are for.
+Open <http://localhost:3000>. If the first page is slow, the backend is waking
+up. Give it a few seconds.
 
 ### Demo accounts
 
@@ -178,77 +175,96 @@ npm run start                    # serve the build at http://localhost:3000
 | Admin | `admin@revonest.com` | `Admin123` |
 | Customer | `okejohn@email.com` | `Password123` |
 
+You can also register a new customer account at `/register`.
+
+### Production build
+
+```bash
+npm run build     # compile and type-check every route
+npm run start     # serve the build at http://localhost:3000
+```
+
+### Available scripts
+
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server with hot reload. |
+| `npm run build` | Create the production build (also type-checks). |
+| `npm run start` | Serve the production build. |
+| `npm run lint` | Run ESLint. |
+| `npm run test:e2e` | Run the Playwright end-to-end tests. |
+| `npm run test:e2e:ui` | Open Playwright's UI to watch and debug tests. |
+
 ---
 
-## 🧪 Running the test suite (test locally)
+## 🧪 Run the test suite
 
-**Testing approach:** the Playwright suite runs the app against an **in-memory
-mock of the Flask API** (`e2e/mock-server.mjs`). Playwright starts both the mock
-and the dev server automatically, so the suite is **deterministic, offline, and
-never touches real data** — every run starts from the same seeded state.
+The end-to-end tests run the real app in a real browser against a **local mock
+of the Flask API** (`e2e/mock-server.mjs`). Playwright starts the mock and the
+dev server for you. Because every run starts from the same seeded data, the
+tests are repeatable, work offline, and never change real data.
 
 ```bash
 # from nextjs-revonest/
 
-# 1. install the Playwright browser once (first time only)
+# 1. Install Playwright's browser (first time only)
 npx playwright install chromium
 
-# 2. run all tests (headless)
+# 2. Make sure nothing else is running on port 3000, then run the tests
 npm run test:e2e
 
-# optional: watch/debug in the Playwright UI
+# Optional: watch the tests in Playwright's UI, or in a visible browser
 npm run test:e2e:ui
-
-# optional: watch the real browser drive the app
 npx playwright test --headed
+
+# Optional: open the HTML report from the last run
+npx playwright show-report
 ```
 
-A successful run reports **9 passed** across three flows:
+A full run reports **22 passed**:
 
-- **`e2e/auth.spec.ts`** — register → login, session persistence across refresh,
-  invalid-credentials error, admin→dashboard redirect, and the logged-out route
-  guard.
-- **`e2e/shopping.spec.ts`** — browse → add to cart → checkout → order appears in
-  `/orders`; checkout is disabled when the cart is empty.
-- **`e2e/admin-crud.spec.ts`** — product create/edit/delete and category create
-  with duplicate-name rejection.
+| File | Tests | What it covers |
+| --- | --- | --- |
+| `e2e/auth.spec.ts` | 11 | Registration and login, session persistence across refresh, invalid credentials, redirects for every role, logout, "Login to buy", admins can't shop, product category |
+| `e2e/shopping.spec.ts` | 2 | Products → add to cart → checkout → the order appears in `/orders`; checkout disabled when the cart is empty |
+| `e2e/admin-crud.spec.ts` | 9 | Product create, edit, and delete; form validation; delete blocked by active orders; category create, rename, and delete; duplicate names; delete blocked by linked products; read-only orders overview |
 
-> `e2e/screenshots.spec.ts` is a utility (not a behavioural test) that
-> regenerates the screenshots below:
-> `npx playwright test e2e/screenshots.spec.ts`.
+> `e2e/screenshots.spec.ts` isn't a test. It regenerates the screenshots in
+> this README: `npx playwright test e2e/screenshots.spec.ts`.
 
 ---
 
 ## 🔑 Environment variables
 
-Copy `.env.example` → `.env.local` and adjust if needed:
+Copy `.env.example` to `.env.local` and adjust if needed:
 
 | Variable | Purpose |
 | --- | --- |
-| `NEXT_PUBLIC_API_BASE_URL` | Base URL of the Flask API (exposed to the browser). |
-| `API_SECRET_KEY` | Server-only secret placeholder (not exposed to the browser). |
+| `NEXT_PUBLIC_API_BASE_URL` | Base URL of the Flask API. Exposed to the browser. |
+| `API_SECRET_KEY` | Placeholder for a server-only secret. Not exposed to the browser and not currently used. |
 
-`.env.local` is gitignored; `.env.example` is committed as a template.
+`.env.local` is ignored by git. `.env.example` is committed as a template.
+
+On **Vercel**, set `NEXT_PUBLIC_API_BASE_URL` in the project's environment
+variables.
 
 ---
 
-## 🧭 Routes
+## 🧭 Routes and access
 
-| Route | Access | What it does |
-| --- | --- | --- |
-| `/` | Public | Home with featured products (streamed behind `<Suspense>`). |
-| `/products` | Public | Catalog with live search + category filter; admins also see an add-product form. |
-| `/products/[id]` | Public | Product detail; `generateMetadata` sets a dynamic title. |
-| `/categories` | Public | Category listing. |
-| `/login`, `/register` | Public | Auth forms; redirect by role on success. |
-| `/cart` | Customer | Cart page with quantity controls, remove, and checkout. |
-| `/checkout` | Customer | Order summary + place order. |
-| `/orders` | Customer | The logged-in user's orders. |
-| `/orders/[id]` | Customer | Order detail with line items. |
-| `/dashboard` | Admin | Admin landing. |
-| `/dashboard/products` | Admin | Product CRUD. |
-| `/dashboard/categories` | Admin | Category CRUD. |
-| `/dashboard/orders` | Admin | Read-only overview of all orders. |
+| Route | Logged out | Customer | Admin |
+| --- | --- | --- | --- |
+| `/` | ✅ | ✅ | ✅ |
+| `/products`, `/products/[id]` | ✅ | ✅ | ✅ |
+| `/categories` | ✅ | ✅ | ✅ |
+| `/login`, `/register` | ✅ | → `/` | → `/dashboard` |
+| `/cart`, `/checkout` | → `/login` | ✅ | → `/dashboard` |
+| `/orders`, `/orders/[id]` | → `/login` | ✅ (own orders only) | → `/dashboard` |
+| `/dashboard` (products) | → `/login` | → `/` | ✅ |
+| `/dashboard/categories` | → `/login` | → `/` | ✅ |
+| `/dashboard/orders` | → `/login` | → `/` | ✅ |
+
+`/dashboard/products` (the old URL) redirects to `/dashboard`.
 
 ---
 
@@ -256,97 +272,148 @@ Copy `.env.example` → `.env.local` and adjust if needed:
 
 ```
 nextjs-revonest/
-├── app/
-│   ├── layout.tsx            # root layout: providers + Header/Footer + Toaster
+├── app/                      # pages (App Router)
+│   ├── layout.tsx            # providers, Header/Footer, toasts
 │   ├── page.tsx              # home
 │   ├── login/ · register/    # auth pages
-│   ├── products/             # list + [id] detail (+ loading/error, nested layout)
+│   ├── products/             # listing + [id] detail (+ loading, error, nested layout)
 │   ├── categories/           # category listing
-│   ├── cart/ · checkout/     # customer cart + checkout
-│   ├── orders/               # orders list + [id] detail
-│   └── dashboard/            # admin: products, categories, orders
-├── components/               # Header, Footer, Card, ProductCard/Grid/List,
-│                             # SearchBar, CategoryFilter, AddProductForm,
-│                             # LoginForm, RegisterForm, PasswordInput,
-│                             # CartMenu, RouteGuard
-├── context/
-│   ├── AuthContext.tsx       # auth state + localStorage session
-│   └── CartContext.tsx       # per-user cart + checkout
-├── lib/
-│   ├── api.ts                # typed fetch helpers (res.ok → ApiError)
-│   ├── types.ts              # domain + UI types
-│   ├── ui.ts                 # formatPrice, status/button classes
-│   └── toast.ts              # react-hot-toast helper
-├── e2e/                      # Playwright specs + mock API server
-├── screenshots/              # screenshots used below
+│   ├── cart/ · checkout/     # customer cart and checkout
+│   ├── orders/               # customer orders + [id] detail
+│   └── dashboard/            # admin: products (page.tsx), categories/, orders/
+├── components/               # shared UI: Header, Footer, Card, ProductCard,
+│   │                         # ProductGrid, ProductList, SearchBar, CategoryFilter,
+│   │                         # LoginForm, RegisterForm, CartMenu, Modal,
+│   │                         # RouteGuard, GuestOnly, …
+│   └── dashboard/            # admin UI: CreateProductForm, EditProductForm,
+│                             # CreateCategoryForm, EditCategoryForm,
+│                             # InlineConfirmDelete, DashboardShell
+├── hooks/                    # useAuth, useCart
+├── context/                  # AuthContext (session), CartContext (per-user cart)
+├── lib/                      # api.ts (typed fetch), types.ts, filters.ts,
+│                             # errors.ts, productImages.ts, toast.ts, ui.ts
+├── public/images/            # product photos
+├── e2e/                      # Playwright tests + mock API server
+├── screenshots/              # images used in this README
 ├── playwright.config.ts
-├── .env.example
-└── package.json
+├── next.config.ts
+└── .env.example
 ```
+
+---
+
+## ⚠️ Known limitations
+
+- **Search and category filtering happen in the browser.** The backend's
+  `GET /products` ignores `?search=` and `?category_id=`, so the app fetches the
+  products and filters them itself. That's fine for a catalog this size.
+- **Roles are checked in the frontend.** The backend has no login tokens, so
+  route guards and the "own orders only" rule run in the browser. A real store
+  would enforce these on the server too. The one rule the backend does enforce
+  is that only pending orders can be cancelled.
+- **The backend sleeps when idle** (Render free tier). See the note under
+  [Links](#-links).
 
 ---
 
 ## 📸 Screenshots
 
-### Authentication
+Images made by the screenshot script come first. Where I also took my own
+screenshot of the same view, it follows.
 
-Login page:
+### Home
 
-![Login](screenshots/auth-01-login.png)
-![Login with autofill](screenshots/LoginPage.png)
+![Home](screenshots/public-01-home.png)
 
-Register page:
+### Product listing
+
+Logged out, the cards show **Login to buy**:
+
+![Products, logged out](screenshots/public-02-products-login-to-buy.png)
+
+Logged in as a customer:
+
+![Products, customer](screenshots/shop-01-products.png)
+
+### Product detail
+
+![Product detail](screenshots/public-03-product-detail.png)
+
+### Categories
+
+![Categories](screenshots/public-04-categories.png)
+
+Clicking a category opens the filtered catalog:
+
+![Filtered by category](screenshots/public-05-category-filtered.png)
+
+### Register
 
 ![Register](screenshots/auth-02-register.png)
 
-Logged in (header shows the username + role):
+### Login
+
+![Login](screenshots/auth-01-login.png)
+![Login with saved accounts](screenshots/LoginPage.png)
+
+Logged in, the header shows the username and role:
 
 ![Logged in](screenshots/auth-04-logged-in.png)
 
-### Shopping journey
+### Cart and checkout
 
-Products catalog:
-
-![Products](screenshots/shop-01-products.png)
-
-Cart preview from the header:
+Cart preview in the header:
 
 ![Cart preview](screenshots/shop-03-cart-preview.png)
-![Cart preview (customer)](screenshots/CartInUser.png)
+![Cart preview, customer](screenshots/CartInUser.png)
 
 Cart page:
 
-![Checkout](screenshots/shop-04-checkout.png)
 ![Customer cart](screenshots/CustomerCart.png)
 
-My orders (cancel is available only for pending orders):
+Checkout:
+
+![Checkout](screenshots/shop-04-checkout.png)
+
+### My orders
 
 ![Orders](screenshots/shop-06-orders.png)
 ![Customer orders](screenshots/CustomerOrders.png)
 
 ### Admin dashboard
 
-Dashboard:
+Product management:
 
 ![Admin dashboard](screenshots/admin-01-dashboard.png)
-![Admin dashboard](screenshots/AdminDashboardUI.png)
 
-Product management (create / edit / delete):
+Create and edit in a modal:
 
-![Product form](screenshots/admin-02-product-form.png)
-![Product created](screenshots/admin-03-product-created.png)
+![Create product](screenshots/admin-02-product-form.png)
+![Edit product](screenshots/admin-07-edit-product.png)
+
+Inline delete confirmation, and the backend refusing a product with active
+orders:
+
+![Delete confirmation](screenshots/admin-08-delete-confirm.png)
+![Delete blocked](screenshots/admin-09-delete-blocked.png)
 
 Category management:
 
-![Categories](screenshots/admin-04-categories.png)
+![Categories admin](screenshots/admin-04-categories.png)
+![Create category](screenshots/admin-10-category-form.png)
 
-All-orders overview:
+Read-only orders overview:
 
 ![Admin orders](screenshots/admin-06-orders.png)
-![Admin orders](screenshots/OrdersDashboardAdmin.png)
 
-### End-to-end tests (Playwright)
+### End-to-end tests
 
-![Authentication tests passing](screenshots/PlaywrightAuthenticationTest.png)
-![Shopping journey tests passing](screenshots/PlaywrightShoppingJourneyTest.png)
-![Admin CRUD tests passing](screenshots/PlaywrightAdminCRUD.png)
+Playwright report, all 22 tests passing:
+
+![E2E report](screenshots/e2e-01-report-overview.png)
+
+Running the suite in Playwright's UI mode:
+
+![Authentication tests](screenshots/PlaywrightAuthenticationTest.png)
+![Shopping journey tests](screenshots/PlaywrightShoppingJourneyTest.png)
+![Admin CRUD tests](screenshots/PlaywrightAdminCRUD.png)
