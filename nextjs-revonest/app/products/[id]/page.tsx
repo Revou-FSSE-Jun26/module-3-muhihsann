@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import Card from "@/components/Card";
-import { getProduct } from "@/lib/api";
+import { getProduct, getCategories } from "@/lib/api";
 import { formatPrice } from "@/lib/ui";
 import { productImage } from "@/lib/productImages";
 
@@ -32,7 +32,13 @@ export default async function ProductDetailPage({
   params: Params;
 }) {
   const { id } = await params;
-  const product = await getProduct(id);
+  // Fetch the product and the category list together, then look up the
+  // product's category name. A failed category fetch shouldn't break the page.
+  const [product, categories] = await Promise.all([
+    getProduct(id),
+    getCategories().catch(() => []),
+  ]);
+  const category = categories.find((c) => c.id === product.category_id);
   const inStock = product.stock_quantity > 0;
 
   return (
@@ -55,6 +61,16 @@ export default async function ProductDetailPage({
             priority
           />
         </div>
+
+        {category && (
+          <Link
+            href={`/products?category=${category.id}`}
+            data-testid="product-category"
+            className="mb-2 inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-700 transition hover:bg-amber-200"
+          >
+            {category.name}
+          </Link>
+        )}
 
         <div className="mb-3 flex items-start justify-between gap-3">
           <h1 className="text-3xl font-extrabold tracking-tight">
