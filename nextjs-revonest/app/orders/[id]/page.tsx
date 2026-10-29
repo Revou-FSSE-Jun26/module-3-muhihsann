@@ -7,7 +7,7 @@ import Card from "@/components/Card";
 import RouteGuard from "@/components/RouteGuard";
 import { ApiError, getOrder } from "@/lib/api";
 import { formatPrice, getStatusClasses } from "@/lib/ui";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import type { Order } from "@/lib/types";
 
 // Customers only: logged-out visitors go to /login, admins to /dashboard.
