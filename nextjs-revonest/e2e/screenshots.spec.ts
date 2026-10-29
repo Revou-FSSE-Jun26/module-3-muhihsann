@@ -26,6 +26,39 @@ async function shotAfterSuccess(
 }
 
 test.describe("Capture flow screenshots", () => {
+  test("public pages (logged out)", async ({ page }) => {
+    // Home with featured products.
+    await page.goto("/");
+    await expect(page.getByText("Wireless Mouse").first()).toBeVisible();
+    await page.screenshot({ path: `${DIR}/public-01-home.png`, fullPage: true });
+
+    // Product listing as a visitor: cards show "Login to buy".
+    await page.goto("/products");
+    await expect(page.getByRole("link", { name: "Login to buy" }).first()).toBeVisible();
+    await page.screenshot({ path: `${DIR}/public-02-products-login-to-buy.png`, fullPage: true });
+
+    // Product detail with its category.
+    await page.goto("/products/1");
+    // Only count the badge the visitor can actually see. Next.js can keep a
+    // hidden copy of a route in the page during navigation, which would
+    // otherwise make this match twice.
+    const category = page.getByTestId("product-category").filter({ visible: true });
+    await expect(category).toHaveCount(1);
+    await expect(category).toHaveText("Electronics");
+    await page.screenshot({ path: `${DIR}/public-03-product-detail.png`, fullPage: true });
+
+    // Categories listing (each card links to its filtered products).
+    await page.goto("/categories");
+    await expect(page.getByTestId("category-link-1")).toBeVisible();
+    await page.screenshot({ path: `${DIR}/public-04-categories.png`, fullPage: true });
+
+    // Clicking a category opens the filtered catalog.
+    await page.getByTestId("category-link-1").click();
+    await expect(page).toHaveURL(/category=1/);
+    await expect(page.getByText("Wireless Mouse").first()).toBeVisible();
+    await page.screenshot({ path: `${DIR}/public-05-category-filtered.png`, fullPage: true });
+  });
+
   test("authentication flow", async ({ page }) => {
     await page.goto("/login");
     await expect(page.getByRole("button", { name: "Log in" })).toBeVisible();

@@ -45,6 +45,36 @@ test.describe("Authentication", () => {
     await expect(page).toHaveURL("/login");
   });
 
+  test("logged-in user is redirected away from /login and /register", async ({ page }) => {
+    await loginAs(page, CUSTOMER.email, CUSTOMER.password);
+    await expect(page).toHaveURL("/");
+
+    for (const path of ["/login", "/register"]) {
+      await page.goto(path);
+      await expect(page).toHaveURL("/");
+    }
+  });
+
+  test("logout clears the session and goes to /login", async ({ page }) => {
+    await loginAs(page, CUSTOMER.email, CUSTOMER.password);
+    await expect(page.getByText(/Hi,\s*okejohn/i)).toBeVisible();
+
+    await page.getByRole("button", { name: "Log out" }).click();
+    await expect(page).toHaveURL("/login");
+
+    // Session really is gone: a customer page now redirects to login.
+    await page.goto("/orders");
+    await expect(page).toHaveURL("/login");
+  });
+
+  test("product detail shows the category name", async ({ page }) => {
+    await page.goto("/products/1");
+    // Visible badge only (see screenshots.spec.ts for why), and exactly one.
+    const category = page.getByTestId("product-category").filter({ visible: true });
+    await expect(category).toHaveCount(1);
+    await expect(category).toHaveText("Electronics");
+  });
+
   test("logged-out visitor sees 'Login to buy' instead of Add to cart", async ({ page }) => {
     await page.goto("/products");
     await expect(page.getByText("Wireless Mouse").first()).toBeVisible();
