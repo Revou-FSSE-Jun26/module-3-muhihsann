@@ -3,13 +3,24 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Card from "@/components/Card";
+import RouteGuard from "@/components/RouteGuard";
 import { ApiError, getOrders, deleteOrder } from "@/lib/api";
 import { formatPrice, getStatusClasses } from "@/lib/ui";
 import { useAuth } from "@/context/AuthContext";
 import { notify } from "@/lib/toast";
 import type { Order } from "@/lib/types";
 
+// Customers only: logged-out visitors go to /login, admins to /dashboard
+// (admins see every order at /dashboard/orders instead).
 export default function OrdersPage() {
+  return (
+    <RouteGuard requireRole="customer" redirectTo="/dashboard">
+      <OrdersContent />
+    </RouteGuard>
+  );
+}
+
+function OrdersContent() {
   const { user, loading: authLoading } = useAuth();
 
   const [orders, setOrders] = useState<Order[]>([]);
@@ -57,24 +68,6 @@ export default function OrdersPage() {
     } finally {
       setDeletingId(null);
     }
-  }
-
-  // Not logged in: prompt to log in (orders are per-user).
-  if (!authLoading && !user) {
-    return (
-      <section className="mx-auto max-w-6xl px-4 py-10">
-        <h1 className="mb-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
-          Orders
-        </h1>
-        <p className="text-stone-500">
-          Please{" "}
-          <Link href="/login" className="font-semibold text-amber-700 hover:underline">
-            log in
-          </Link>{" "}
-          to view your orders.
-        </p>
-      </section>
-    );
   }
 
   return (

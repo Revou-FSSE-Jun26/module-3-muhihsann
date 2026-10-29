@@ -78,6 +78,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, userId]);
 
   const addItem = useCallback((product: Product, quantity = 1) => {
+    // Admins manage the store; they don't shop.
+    if (user?.role === "admin") {
+      notify.error("Admin accounts can't add items to a cart.");
+      return;
+    }
     notify.success(`Added "${product.name}" to cart.`);
     setItems((prev) => {
       const existing = prev.find((l) => l.product.id === product.id);
@@ -96,7 +101,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         { product, quantity: Math.min(quantity, product.stock_quantity) },
       ];
     });
-  }, []);
+  }, [user]);
 
   const updateQuantity = useCallback((productId: number, quantity: number) => {
     setItems((prev) =>
@@ -124,6 +129,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const checkout = useCallback(async (): Promise<number> => {
     if (!user) throw new Error("You must be logged in to checkout.");
+    if (user.role !== "customer") {
+      throw new Error("Only customer accounts can place orders.");
+    }
     if (items.length === 0) throw new Error("Your cart is empty.");
 
     const order = await api.createOrder({

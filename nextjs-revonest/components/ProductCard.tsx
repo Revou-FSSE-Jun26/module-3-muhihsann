@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Card from "@/components/Card";
+import { useAuth } from "@/context/AuthContext";
 import { getButtonClasses, formatPrice } from "@/lib/ui";
 import { productImage } from "@/lib/productImages";
 import type { ProductCardProps } from "@/lib/types";
@@ -22,8 +24,12 @@ export default function ProductCard({
   onAddToCart,
 }: ProductCardProps) {
   const [quantity, setQuantity] = useState(initialQuantity);
+  const { isAdmin, loading: authLoading } = useAuth();
 
   const inStock = product.stock_quantity > 0;
+  // Admins manage the catalog but don't shop, so they get no cart controls.
+  // Gated on authLoading so the server and first client render match.
+  const adminView = !authLoading && isAdmin;
 
   return (
     <Card className="flex h-full flex-col p-5">
@@ -58,8 +64,18 @@ export default function ProductCard({
         {formatPrice(product.price)}
       </p>
 
-      {/* Actions only render when showActions is true */}
-      {showActions && (
+      {/* Admins: link to the dashboard instead of shopping controls. */}
+      {showActions && adminView && (
+        <Link
+          href="/dashboard/products"
+          className="mt-auto block rounded-lg border border-stone-300 px-4 py-2 text-center text-sm font-semibold text-stone-700 transition hover:border-amber-400 hover:text-amber-700"
+        >
+          Manage in dashboard
+        </Link>
+      )}
+
+      {/* Shopping actions (customers and visitors) */}
+      {showActions && !adminView && (
         <div className="mt-auto space-y-3">
           {/* Quantity counter — disabled when out of stock */}
           <div className="flex items-center gap-3">

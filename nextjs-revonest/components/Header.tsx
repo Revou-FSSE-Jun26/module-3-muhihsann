@@ -27,6 +27,12 @@ export default function Header() {
     setMounted(true);
   }, []);
   const showAuth = mounted && !loading;
+  // Admins don't shop: no customer Orders link and no cart in the header.
+  // (They see all orders under Dashboard → Orders.)
+  const adminView = showAuth && isAdmin;
+  const visibleLinks = adminView
+    ? navLinks.filter((link) => link.href !== "/orders")
+    : navLinks;
 
   // A link is "active" when the current path matches it (or is nested under it,
   // for everything except the home route).
@@ -47,7 +53,7 @@ export default function Header() {
 
         <nav aria-label="Primary" className="hidden sm:block">
           <ul className="flex items-center gap-1">
-            {navLinks.map((link) => (
+            {visibleLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
@@ -84,7 +90,7 @@ export default function Header() {
 
         {/* Right side: cart + auth state. `loading` avoids a flash before hydration. */}
         <div className="flex items-center gap-3">
-          <CartMenu />
+          {!adminView && <CartMenu />}
           {!showAuth ? null : user ? (
             <>
               <span className="hidden text-sm text-stone-600 sm:inline">

@@ -4,13 +4,25 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Card from "@/components/Card";
+import RouteGuard from "@/components/RouteGuard";
 import { ApiError, getOrder } from "@/lib/api";
 import { formatPrice, getStatusClasses } from "@/lib/ui";
+import { useAuth } from "@/context/AuthContext";
 import type { Order } from "@/lib/types";
 
+// Customers only: logged-out visitors go to /login, admins to /dashboard.
 export default function OrderDetailPage() {
+  return (
+    <RouteGuard requireRole="customer" redirectTo="/dashboard">
+      <OrderDetailContent />
+    </RouteGuard>
+  );
+}
+
+function OrderDetailContent() {
   const params = useParams<{ id: string }>();
   const orderId = Number(params.id);
+  const { user } = useAuth();
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
@@ -20,14 +32,22 @@ export default function OrderDetailPage() {
     setLoading(true);
     setError(null);
     try {
-      setOrder(await getOrder(orderId));
+      const data = await getOrder(orderId);
+      // Customers may only view their own orders. Treat anyone else's order
+      // as not found rather than revealing that it exists.
+      if (user && data.user_id !== user.id) {
+        setOrder(null);
+        setError("Order not found.");
+      } else {
+        setOrder(data);
+      }
     } catch (err) {
       if (err instanceof ApiError) setError(err.message);
       else setError("Couldn't load this order. Please try again.");
     } finally {
       setLoading(false);
     }
-  }, [orderId]);
+  }, [orderId, user]);
 
   useEffect(() => {
     load();

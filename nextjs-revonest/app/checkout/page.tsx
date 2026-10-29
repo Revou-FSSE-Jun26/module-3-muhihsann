@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Card from "@/components/Card";
+import RouteGuard from "@/components/RouteGuard";
 import { useCart } from "@/context/CartContext";
-import { useAuth } from "@/context/AuthContext";
 import { ApiError } from "@/lib/api";
 import { formatPrice } from "@/lib/ui";
 
@@ -13,10 +13,19 @@ import { formatPrice } from "@/lib/ui";
  * Dedicated checkout page. Shows an order summary built from the cart, then
  * confirms the order via POST /orders (through CartContext.checkout), clears
  * the cart, and redirects to /orders.
+ *
+ * Customers only: logged-out visitors go to /login, admins to /dashboard.
  */
 export default function CheckoutPage() {
+  return (
+    <RouteGuard requireRole="customer" redirectTo="/dashboard">
+      <CheckoutContent />
+    </RouteGuard>
+  );
+}
+
+function CheckoutContent() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
   const { items, total, checkout } = useCart();
 
   const [placing, setPlacing] = useState(false);
@@ -25,10 +34,6 @@ export default function CheckoutPage() {
   const empty = items.length === 0;
 
   async function handlePlaceOrder() {
-    if (!user) {
-      router.push("/login");
-      return;
-    }
     setPlacing(true);
     setError(null);
     try {
@@ -40,27 +45,6 @@ export default function CheckoutPage() {
     } finally {
       setPlacing(false);
     }
-  }
-
-  // Not logged in: orders are per-user, so require login.
-  if (!authLoading && !user) {
-    return (
-      <section className="mx-auto max-w-2xl px-4 py-10">
-        <h1 className="mb-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
-          Checkout
-        </h1>
-        <p className="text-stone-500">
-          Please{" "}
-          <Link
-            href="/login"
-            className="font-semibold text-amber-700 hover:underline"
-          >
-            log in
-          </Link>{" "}
-          to complete your order.
-        </p>
-      </section>
-    );
   }
 
   return (

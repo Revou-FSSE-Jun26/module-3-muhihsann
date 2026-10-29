@@ -3,17 +3,25 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Card from "@/components/Card";
+import RouteGuard from "@/components/RouteGuard";
 import { useCart } from "@/context/CartContext";
-import { useAuth } from "@/context/AuthContext";
 import { formatPrice } from "@/lib/ui";
 
+// Customers only: logged-out visitors go to /login, admins to /dashboard.
 export default function CartPage() {
+  return (
+    <RouteGuard requireRole="customer" redirectTo="/dashboard">
+      <CartContent />
+    </RouteGuard>
+  );
+}
+
+function CartContent() {
   const router = useRouter();
-  const { user } = useAuth();
   const { items, total, updateQuantity, removeItem, clear } = useCart();
 
   function handleCheckout() {
-    router.push(user ? "/checkout" : "/login");
+    router.push("/checkout");
   }
 
   return (
@@ -108,7 +116,7 @@ export default function CartPage() {
                 onClick={handleCheckout}
                 className="flex-1 rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-700"
               >
-                {user ? "Proceed to checkout" : "Log in to checkout"}
+                Proceed to checkout
               </button>
             </div>
           </Card>

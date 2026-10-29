@@ -44,4 +44,28 @@ test.describe("Authentication", () => {
     await page.goto("/dashboard");
     await expect(page).toHaveURL("/login");
   });
+
+  test("logged-out visitor is redirected from customer pages to login", async ({ page }) => {
+    for (const path of ["/cart", "/checkout", "/orders"]) {
+      await page.goto(path);
+      await expect(page).toHaveURL("/login");
+    }
+  });
+
+  test("admin cannot shop: no add-to-cart and customer pages redirect", async ({ page }) => {
+    await loginAs(page, ADMIN.email, ADMIN.password);
+    await expect(page).toHaveURL("/dashboard");
+
+    // No shopping controls on the catalog for admins.
+    await page.goto("/products");
+    await expect(page.getByText("Wireless Mouse").first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "Add to cart" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Manage in dashboard" }).first()).toBeVisible();
+
+    // Customer-only pages send admins to their dashboard.
+    for (const path of ["/cart", "/checkout"]) {
+      await page.goto(path);
+      await expect(page).toHaveURL("/dashboard");
+    }
+  });
 });
