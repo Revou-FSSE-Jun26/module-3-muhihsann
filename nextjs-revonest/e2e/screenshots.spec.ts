@@ -106,30 +106,56 @@ test.describe("Capture flow screenshots", () => {
   test("admin dashboard CRUD flow", async ({ page }) => {
     await loginAs(page, ADMIN.email, ADMIN.password);
     await expect(page).toHaveURL("/dashboard");
+    await expect(page.getByTestId("product-row-1")).toBeVisible();
+    // Product management table at /dashboard.
     await page.screenshot({ path: `${DIR}/admin-01-dashboard.png`, fullPage: true });
 
-    await page.goto("/dashboard/products");
-    await expect(page.getByRole("heading", { name: "Products" })).toBeVisible();
-    await page.getByPlaceholder("e.g. Wireless Keyboard").fill("Desk Lamp");
-    await page.getByRole("combobox").selectOption({ label: "Electronics" });
-    await page.getByPlaceholder("e.g. 25").fill("35");
-    await page.getByPlaceholder("e.g. 100").fill("20");
-    await page.screenshot({ path: `${DIR}/admin-02-product-form.png`, fullPage: true });
+    // CreateProductForm in its modal, filled in. (Viewport shot keeps the
+    // dimmed backdrop and the modal in frame.)
+    await page.getByRole("button", { name: "+ Add product" }).click();
+    const create = page.getByRole("dialog", { name: "Add a product" });
+    await create.getByLabel("Name").fill("Desk Lamp");
+    await create.getByLabel("Category").selectOption({ label: "Electronics" });
+    await create.getByLabel(/Price/).fill("35");
+    await create.getByLabel("Stock quantity").fill("20");
+    await create.getByLabel(/Description/).fill("Adjustable LED desk lamp");
+    await page.screenshot({ path: `${DIR}/admin-02-product-form.png` });
 
-    await page.getByRole("button", { name: "Add product" }).click();
+    await create.getByRole("button", { name: "Create product" }).click();
     await expect(page.getByRole("row", { name: /Desk Lamp/ })).toBeVisible();
     await shotAfterSuccess(page, `${DIR}/admin-03-product-created.png`);
 
+    // EditProductForm, pre-populated from GET /products/[id].
+    await page.getByTestId("product-edit-1").click();
+    const edit = page.getByRole("dialog", { name: "Edit product" });
+    await expect(edit.getByLabel("Name")).toHaveValue("Wireless Mouse");
+    await page.screenshot({ path: `${DIR}/admin-07-edit-product.png` });
+    await edit.getByRole("button", { name: "Cancel" }).click();
+
+    // Inline delete confirmation, then the backend refusing (active orders).
+    await page.getByTestId("product-delete-2").click();
+    await page.screenshot({ path: `${DIR}/admin-08-delete-confirm.png`, fullPage: true });
+    await page.getByTestId("product-delete-2-confirm").click();
+    await expect(page.getByTestId("dashboard-error")).toBeVisible();
+    await page.screenshot({ path: `${DIR}/admin-09-delete-blocked.png`, fullPage: true });
+
+    // Category management.
     await page.goto("/dashboard/categories");
-    await expect(page.getByRole("heading", { name: "Categories" })).toBeVisible();
+    await expect(page.getByTestId("category-row-1")).toBeVisible();
     await page.screenshot({ path: `${DIR}/admin-04-categories.png`, fullPage: true });
 
-    await page.getByPlaceholder("e.g. Toys").fill(`Gardening_${Date.now()}`);
-    await page.getByRole("button", { name: "Add" }).click();
+    // CreateCategoryForm (name only) in its modal.
+    await page.getByRole("button", { name: "+ Add category" }).click();
+    const createCategory = page.getByRole("dialog", { name: "Add a category" });
+    await createCategory.getByLabel("Name").fill("Gardening");
+    await page.screenshot({ path: `${DIR}/admin-10-category-form.png` });
+    await createCategory.getByRole("button", { name: "Create category" }).click();
+    await expect(page.getByRole("row", { name: /Gardening/ })).toBeVisible();
     await shotAfterSuccess(page, `${DIR}/admin-05-category-created.png`);
 
+    // Read-only orders overview with product lists.
     await page.goto("/dashboard/orders");
-    await expect(page.getByRole("heading", { name: "Orders" })).toBeVisible();
+    await expect(page.getByTestId("order-row-1")).toContainText("Mechanical Keyboard");
     await page.screenshot({ path: `${DIR}/admin-06-orders.png`, fullPage: true });
   });
 });

@@ -24,10 +24,22 @@ function freshState() {
       { id: 1, name: "Wireless Mouse", description: "Ergonomic mouse", price: 20, stock_quantity: 150, category_id: 1 },
       { id: 2, name: "Mechanical Keyboard", description: "Clicky keys", price: 90, stock_quantity: 80, category_id: 1 },
     ],
-    orders: [],
+    // One pending order (from a user id no test logs in as) so the
+    // Mechanical Keyboard has an "active order" and can't be deleted —
+    // mirroring the real backend's guard.
+    orders: [
+      {
+        id: 1,
+        user_id: 99,
+        status: "pending",
+        total_amount: 90,
+        order_date: "2026-09-03T15:55:33.951660",
+        items: [{ product_id: 2, product_name: "Mechanical Keyboard", quantity: 1, unit_price: 90 }],
+      },
+    ],
     nextProductId: 3,
     nextCategoryId: 3,
-    nextOrderId: 1,
+    nextOrderId: 2,
   };
 }
 
@@ -97,6 +109,12 @@ const server = createServer(async (req, res) => {
     }
     if (method === "DELETE") {
       if (idx === -1) return send(res, 404, { error: "Product not found" });
+      // Same rule as the real backend: no deleting products in active orders.
+      const active = ["pending", "processing", "shipped"];
+      const inActiveOrder = state.orders.some(
+        (o) => active.includes(o.status) && (o.items ?? []).some((it) => it.product_id === id)
+      );
+      if (inActiveOrder) return send(res, 400, { error: "Cannot delete product with active orders" });
       state.products.splice(idx, 1);
       return send(res, 200, { message: "Product deleted successfully" });
     }
@@ -121,6 +139,10 @@ const server = createServer(async (req, res) => {
     }
     if (method === "DELETE") {
       if (idx === -1) return send(res, 404, { error: "Category not found" });
+      // Same rule as the real backend: no deleting categories that have products.
+      if (state.products.some((p) => p.category_id === id)) {
+        return send(res, 400, { error: "Cannot delete category that has products" });
+      }
       state.categories.splice(idx, 1);
       return send(res, 200, { message: "Category deleted successfully" });
     }
