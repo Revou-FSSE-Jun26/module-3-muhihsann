@@ -15,7 +15,9 @@
 
 # playwright
 /test-results/
+/test-results-live/
 /playwright-report/
+/playwright-report-live/
 /blob-report/
 /.playwright/
 
