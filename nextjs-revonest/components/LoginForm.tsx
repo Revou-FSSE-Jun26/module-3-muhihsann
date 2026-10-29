@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import PasswordInput from "@/components/PasswordInput";
 import { ApiError } from "@/lib/api";
 import { notify } from "@/lib/toast";

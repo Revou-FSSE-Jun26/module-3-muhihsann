@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Card from "@/components/Card";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import { getButtonClasses, formatPrice } from "@/lib/ui";
 import { productImage } from "@/lib/productImages";
 import type { ProductCardProps } from "@/lib/types";
@@ -88,7 +88,7 @@ export default function ProductCard({
       {/* Admins: link to the dashboard instead of shopping controls. */}
       {showActions && viewer === "admin" && (
         <Link
-          href="/dashboard/products"
+          href="/dashboard"
           className="mt-auto block rounded-lg border border-stone-300 px-4 py-2 text-center text-sm font-semibold text-stone-700 transition hover:border-amber-400 hover:text-amber-700"
         >
           Manage in dashboard

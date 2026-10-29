@@ -10,8 +10,8 @@ import Card from "@/components/Card";
 import { getProducts } from "@/lib/api";
 import { formatPrice } from "@/lib/ui";
 import { filterProducts, parseCategoryParam } from "@/lib/filters";
-import { useCart } from "@/context/CartContext";
-import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 import type { Product } from "@/lib/types";
 
 interface ProductListProps {

@@ -2,7 +2,6 @@
 
 import {
   createContext,
-  useContext,
   useEffect,
   useState,
   type ReactNode,
@@ -12,7 +11,7 @@ import type { User } from "@/lib/types";
 
 const STORAGE_KEY = "revonest.user";
 
-interface AuthContextValue {
+export interface AuthContextValue {
   user: User | null;
   /** True until we've read localStorage on first load (avoids UI flicker). */
   loading: boolean;
@@ -29,7 +28,10 @@ interface AuthContextValue {
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+// Read it through the useAuth() hook in hooks/useAuth.ts.
+export const AuthContext = createContext<AuthContextValue | undefined>(
+  undefined
+);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -95,9 +97,3 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-/** Hook to read auth state. Throws if used outside <AuthProvider>. */
-export function useAuth(): AuthContextValue {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within <AuthProvider>");
-  return ctx;
-}

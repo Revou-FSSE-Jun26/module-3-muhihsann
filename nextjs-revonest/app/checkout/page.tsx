@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Card from "@/components/Card";
 import RouteGuard from "@/components/RouteGuard";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/hooks/useCart";
 import { ApiError } from "@/lib/api";
 import { formatPrice } from "@/lib/ui";
 

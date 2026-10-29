@@ -6,7 +6,7 @@ import Card from "@/components/Card";
 import RouteGuard from "@/components/RouteGuard";
 import { ApiError, getOrders, deleteOrder } from "@/lib/api";
 import { formatPrice, getStatusClasses } from "@/lib/ui";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import { notify } from "@/lib/toast";
 import type { Order } from "@/lib/types";
 

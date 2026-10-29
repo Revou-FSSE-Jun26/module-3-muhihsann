@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Card from "@/components/Card";
 import RouteGuard from "@/components/RouteGuard";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/ui";
 
 // Customers only: logged-out visitors go to /login, admins to /dashboard.

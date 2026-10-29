@@ -3,7 +3,6 @@
 import {
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -12,7 +11,7 @@ import {
 } from "react";
 import * as api from "@/lib/api";
 import type { Product } from "@/lib/types";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import { notify } from "@/lib/toast";
 
 /** One line in the cart: the product plus how many of it. */
@@ -21,7 +20,7 @@ export interface CartLine {
   quantity: number;
 }
 
-interface CartContextValue {
+export interface CartContextValue {
   items: CartLine[];
   /** Total number of units across all lines (for the header badge). */
   count: number;
@@ -35,7 +34,10 @@ interface CartContextValue {
   checkout: () => Promise<number>;
 }
 
-const CartContext = createContext<CartContextValue | undefined>(undefined);
+// Read it through the useCart() hook in hooks/useCart.ts.
+export const CartContext = createContext<CartContextValue | undefined>(
+  undefined
+);
 
 /**
  * localStorage key, scoped per account (Option B). Each user gets their own
@@ -167,11 +169,4 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
-}
-
-/** Hook to read cart state. Throws if used outside <CartProvider>. */
-export function useCart(): CartContextValue {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error("useCart must be used within <CartProvider>");
-  return ctx;
 }
